@@ -21,6 +21,6 @@ div.jQBracket.rl .bracket{
 
     margin-left: 40px;
 }
-div.jQBracket.rl .bracket:first-child{
-    margin-right: 0;
+div.jQBracket.rl .bracket >:first-child{
+    margin-right: 0 !important;
 }
