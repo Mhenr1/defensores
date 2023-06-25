@@ -1,0 +1,26 @@
+body {
+    min-height: 100vh;
+    margin: 0;
+    background: url('../arena.png');
+    background-attachment: fixed;
+    background-size: cover;
+}
+
+.tournament {
+
+    height: 100vh;
+    width: 100vw;
+    display: grid;
+    grid-template-columns: .4fr auto .4fr;
+}
+
+.tournament >div{
+    border: 1px solid black;
+}
+div.jQBracket.rl .bracket{
+
+    margin-left: 40px;
+}
+div.jQBracket.rl .bracket:first-child{
+    margin-right: 0;
+}
