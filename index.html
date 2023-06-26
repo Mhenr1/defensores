@@ -9,7 +9,22 @@
     <script src="https://code.jquery.com/jquery-3.7.0.min.js"
         integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g=" crossorigin="anonymous"></script>
     <script src="./js/bracket.js"></script>
-    <title>Document</title>
+    <script>
+    
+    (function() {
+    // Replace with the URL of your CSS style sheet
+    const href = './css/style.css';
+
+    // Leave the rest of the code as-is
+    const link = document.createElement('link');
+    const cacheBuster = Math.round(new Date().getTime() / 1000);
+    link.setAttribute('href', href + '?cb=' + cacheBuster);
+    link.setAttribute('rel','stylesheet');
+    head.appendChild(link);
+})();
+    
+    </script>
+    <title>Torneio Defensores</title>
 </head>
 
 <body>
@@ -71,6 +86,8 @@ function saveFn(data, userData) {
         })
     })
 
+
+   
 </script>
 
 </html>
