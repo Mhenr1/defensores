@@ -9,13 +9,13 @@
     <script src="https://code.jquery.com/jquery-3.7.0.min.js"
         integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g=" crossorigin="anonymous"></script>
     <script src="./js/bracket.js"></script>
-    <title>Torneio Defensores</title>
+    <title>Document</title>
 </head>
 
 <body>
     <div class="tournament">
         <div id="tournamentA"></div>
-        <div id="Final"></div>
+       <div>Final</div>
         <div id="tournamentB"></div>
     </div>
 </body>
@@ -50,15 +50,24 @@
         ],
 
     }
+    
+
+function saveFn(data, userData) {
+ 
+ 
+}
+
     $(function () {
         $('#tournamentA').bracket({
             init: TeamIchigo /* data to initialize the bracket with */,
-            skipConsolationRound:true
+            skipConsolationRound:true,
+            save: saveFn
         })
         $('#tournamentB').bracket({
             init: TeamByakuya /* data to initialize the bracket with */,
             skipConsolationRound:true,
-            dir: 'rl'
+            dir: 'rl',
+            save: saveFn,
         })
     })
 
