@@ -19,7 +19,7 @@
     const cacheBuster = Math.round(new Date().getTime() / 1000);
     link.setAttribute('href', href + '?cb=' + cacheBuster);
     link.setAttribute('rel','stylesheet');
-    head.appendChild(link);
+    document.head.appendChild(link);
 })();
     
     </script>
