@@ -253,7 +253,7 @@ function observe(team) {
 
         e--
 
-    }
+    } 
     k = team.results[0][e][j].findIndex(i => i == 1)
     k1 = teamAux[e][j1].findIndex(i => i == 1)
 
