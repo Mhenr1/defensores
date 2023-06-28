@@ -32,13 +32,39 @@ var modelByakuya = {
 
 
 }
+var modelFinal = {
+    teams: [["", ""], ["", ""]],
+    results: [
+        [
+
+        ],
+        ,
+    ]
+}
 var TeamIchigo = JSON.parse(localStorage.getItem("TeamIchigo")) || modelIchigo
 var TeamByakuya = JSON.parse(localStorage.getItem("TeamByakuya")) || modelByakuya
+var final = JSON.parse(localStorage.getItem("final")) || modelFinal
 
 function save(data, userData) {
     window[userData] = data
     localStorage.setItem(userData, JSON.stringify(data));
+    if (userData != "final") {
+        let k = "TeamByakuya" == userData ? 1 : 0;
+        let result = observe(data)
+        if (result !== false) {
+            final.teams[k] = result
+            console.log(final.results[0][k], k)
+            final.results[0][k] = [1, 0]
+            console.log(final.results[0][k])
 
+        } else {
+            final.teams[k] = ["",""]
+            final.results[0][k] = [0, 0]
+
+        }
+
+        initTournament()
+    }
 
 }
 
@@ -99,6 +125,13 @@ var initTournament = function () {
         dir: 'rl',
         ...conf,
         userData: "TeamByakuya"
+
+    })
+    $('#final').bracket({
+        init: final,
+        ...conf,
+        skipConsolationRound: false,
+        userData: "final"
 
     })
 }
@@ -181,6 +214,7 @@ function reset() {
     if (shuffleActive || locked) return;
     TeamByakuya = modelByakuya
     TeamIchigo = modelIchigo
+    final = modelFinal
     transition()
 
 
@@ -191,45 +225,44 @@ function lock(e) {
     locked = !locked
     if (locked) {
         newText = 'lock'
-        $(e).removeClass('unlock')
+        $(e).parent().removeClass('unlock')
         lockname()
     } else {
-        $(e).addClass('unlock')
+        $(e).parent().addClass('unlock')
     }
     $(e).text(newText)
 }
 $(document).mousemove(function (event) {
-    //  console.log(event.pageX + ", " + event.pageY);
+
 
     $("#follow").offset({ top: event.pageY + 5, left: event.pageX + 5 })
 
 });
+function observe(team) {
+    var e = 3
+    var j = 0
+    var j1 = 0
+    var teamAux = JSON.parse(JSON.stringify(team.results[0]));
+    teamAux[e][j1].reverse()
+    while (e > 0) {
+        var k = team.results[0][e][j].findIndex(i => i == 1)
+        var k1 = teamAux[e][j1].findIndex(i => i == 1)
+        if (k == -1) return false;
+        j1 = (2 * j1) + k1
+        j = (2 * j) + k
 
-[[
+        e--
 
-    [[1, 0], [0, 1], [1, 0], [1, 0], [1, 0], [1, 0], [1, 0], [1, 0]],
-    //  1       2       3       4
-    [[0, 1], [0, 1], [0, 1], [1, 0]],
-    //0  1    2  3
-    [[1, 0], [1, 0]],
-    //0  1
-    [[0, 1]]
-]]
-var e = 3
-var j = 0
-var j1 = 0
-var ichigoAux = JSON.parse(JSON.stringify(TeamIchigo.results[0]));
-ichigoAux[e][j1].reverse()
-while (e > 0) {
-    var k = TeamIchigo.results[0][e][j].findIndex(i => i == 1)
-    var k1 = ichigoAux[e][j1].findIndex(i => i == 1)
-    j1 = (2 * j1) + k1
-    j = (2 * j) + k
+    }
+    k = team.results[0][e][j].findIndex(i => i == 1)
+    k1 = teamAux[e][j1].findIndex(i => i == 1)
 
-    e--
- 
+    var semiFinal = [
+        team.teams[j][k],
+        team.teams[j1][k1]
+    ];
+
+    return semiFinal
 }
-k = TeamIchigo.results[0][e][j].findIndex(i => i == 1)
 
-k1 = ichigoAux[e][j1].findIndex(i => i == 1)
-console.log(TeamIchigo.teams[j1][k1])
+

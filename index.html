@@ -35,7 +35,7 @@
         <div class="tournament">
 
             <div id="tournamentA"></div>
-            <div id="final">Final
+            <div id="final">
 
 
 
@@ -45,19 +45,20 @@
         </div>
     </div>
     <div class="tools">
-        <span class="material-icons-outlined" onclick="lock(this)" id="lock" class="">lock</span>
-        <span id="shuffle" class="material-icons-outlined" onclick="shuffle()">
-            shuffle
-        </span>
+        <div>
+            <span class="material-icons-outlined" onclick="lock(this)" id="lock">lock</span>
+            <span id="shuffle" class="material-icons-outlined" onclick="shuffle()" id="shuffle" data-popup="Sortear">
+                shuffle
+            </span>
 
-        <span class="material-icons-outlined" onclick="setName()">
-            edit
-        </span>
-        <span class="material-icons-outlined" onclick="reset()">
-            restart_alt
-        </span>
+            <span class="material-icons-outlined" onclick="setName()" data-popup="Editar nomes">
+                edit
+            </span>
+            <span class="material-icons-outlined" onclick="reset()" data-popup="Resetar">
+                restart_alt
+            </span>
 
-
+        </div>
     </div>
     <span class="material-icons-outlined" id="follow">
         edit
