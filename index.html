@@ -7,86 +7,67 @@
     <link rel="stylesheet" href="./css/bracket.css">
     <script src="https://code.jquery.com/jquery-3.7.0.min.js"
         integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g=" crossorigin="anonymous"></script>
-    <script src="./js/bracket.js"></script>
-    <script>
-    
-    (function() {
-    // Replace with the URL of your CSS style sheet
-    const href = './css/style.css';
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
 
-    // Leave the rest of the code as-is
-    const link = document.createElement('link');
-    const cacheBuster = Math.round(new Date().getTime() / 1000);
-    link.setAttribute('href', href + '?cb=' + cacheBuster);
-    link.setAttribute('rel','stylesheet');
-    document.head.appendChild(link);
-})();
-    
+    <script src="./js/jquery.bracket.min.js"></script>
+    <script>
+
+        (function () {
+            // Replace with the URL of your CSS style sheet
+            const href = './css/style.css';
+
+            // Leave the rest of the code as-is
+            const link = document.createElement('link');
+            const cacheBuster = Math.round(new Date().getTime() / 1000);
+            link.setAttribute('href', href + '?cb=' + cacheBuster);
+            link.setAttribute('rel', 'stylesheet');
+            document.head.appendChild(link);
+        })();
+
     </script>
     <title>Torneio Defensores</title>
 </head>
 
 <body>
-    <div class="tournament">
-        <div id="tournamentA"></div>
-       <div>Final</div>
-        <div id="tournamentB"></div>
+
+
+    <div id="content">
+        <div class="tournament">
+
+            <div id="tournamentA"></div>
+            <div id="final">Final
+
+
+
+            </div>
+            <div id="tournamentB"></div>
+
+        </div>
     </div>
+    <div class="tools">
+        <span class="material-icons-outlined" onclick="lock(this)" id="lock" class="">lock</span>
+        <span id="shuffle" class="material-icons-outlined" onclick="shuffle()">
+            shuffle
+        </span>
+
+        <span class="material-icons-outlined" onclick="setName()">
+            edit
+        </span>
+        <span class="material-icons-outlined" onclick="reset()">
+            restart_alt
+        </span>
+
+
+    </div>
+    <span class="material-icons-outlined" id="follow">
+        edit
+    </span>
 </body>
+<script src="./js/app.js"></script>
 
 <script>
+    initTournament();
 
-    var TeamIchigo = {
-        teams: [
-            ["Team 1", "Team 2"],
-            ["Team 3", "Team 4"],
-            ["Team 5", "Team 6"],
-            ["Team 7", "Team 8"],
-            ["Team 9", "Team 10"],
-            ["Team 11", "Team 12"],
-            ["Team 13", "Team 14"],
-            ["Team 15", "Team 16"],
-
-        ],
-
-    }
-    var TeamByakuya = {
-        teams: [
-            ["Team 1", "Team 2"],
-            ["Team 3", "Team 4"],
-            ["Team 5", "Team 6"],
-            ["Team 7", "Team 8"],
-            ["Team 9", "Team 10"],
-            ["Team 11", "Team 12"],
-            ["Team 13", "Team 14"],
-            ["Team 15", "Team 16"],
-
-        ],
-
-    }
-    
-
-function saveFn(data, userData) {
- 
- 
-}
-
-    $(function () {
-        $('#tournamentA').bracket({
-            init: TeamIchigo /* data to initialize the bracket with */,
-            skipConsolationRound:true,
-            save: saveFn
-        })
-        $('#tournamentB').bracket({
-            init: TeamByakuya /* data to initialize the bracket with */,
-            skipConsolationRound:true,
-            dir: 'rl',
-            save: saveFn,
-        })
-    })
-
-
-   
 </script>
 
 </html>

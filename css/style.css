@@ -4,27 +4,106 @@ body {
     background: url('../arena.png');
     background-attachment: fixed;
     background-size: cover;
-    
+
 }
 
 .tournament {
     box-sizing: border-box;
     height: 100vh;
-    width: 100vw;
-    display: grid;
-   padding: 10px;
-    grid-template-columns:2fr 1fr 2fr;
-}
-
-
-div.jQBracket .bracket{
     width: 100%;
-   
+    display: grid;
+    padding: 10px;
+    grid-template-columns: auto 1fr auto;
+    /* justify-items: center; */
+    /* align-items: center; */
+    justify-content: center;
+    align-content: center;
 }
 
-div.jQBracket.rl .bracket >:first-child{
+#final {
+    background-color: aliceblue;
+}
+
+div.jQBracket {
+    width: fit-content !important;
+}
+
+div.jQBracket .bracket {
+    width: 100%;
+
+}
+
+div.jQBracket.rl .bracket>:first-child {
     margin-right: 0 !important;
 }
-.tools{
-    display: none; 
+
+div.jQBracket.rl .bracket>:last-child {
+    margin-left: 20px;
 }
+
+.team {
+    transition: transform 1s;
+    backface-visibility: hidden;
+
+
+}
+
+
+#content.animate_content .bracket .round:first-child .team {
+
+    transform: rotateX(180deg);
+
+}
+
+.round:first-child .team::before {
+    transform: rotateX(-180deg);
+    content: "";
+    position: absolute;
+    width: inherit;
+    height: inherit;
+    background: inherit;
+
+
+
+
+}
+
+.tools {
+    background-color: rgba(255, 255, 255, .3);
+    position: absolute;
+    bottom: 0;
+}
+
+.tools:hover {
+    background-color: rgba(255, 255, 255, .5);
+
+}
+
+.material-icons-outlined {
+    color: rgba(0, 0, 0, 0.26);
+}
+
+.material-icons-outlined:hover {
+    color: rgba(0, 0, 0, 0.54);
+    cursor: pointer;
+}
+
+#follow {
+    display: none;
+    position: fixed;
+    z-index: 5;
+    color: rgba(0, 0, 0, 1);
+    pointer-events: none
+}
+body.editActive #follow{
+    display: block;
+}
+#lock {
+color:rgba(255,0,0,.5)
+
+}
+
+#lock.unlock {
+    color:rgba(0,255,0,.5)
+    
+    }

@@ -61,7 +61,8 @@ div.jQBracket .team {
     z-index: 1;
     float: left;
     background-color: #eee;
-    cursor: default
+    cursor: default;
+    height: 22px;
 }
 
 div.jQBracket .team:first-child {

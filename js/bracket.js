@@ -6,18 +6,27 @@
  *
  * Licenced under the MIT licence
  */
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function (t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
     };
-})();
+    return __assign.apply(this, arguments);
+};
 // tslint:disable-next-line: no-reference
 /// <reference path="../lib/jquery.d.ts" />
+var EntryState;
+(function (EntryState) {
+    EntryState["EMPTY_BYE"] = "empty-bye";
+    EntryState["EMPTY_TBD"] = "empty-tbd";
+    EntryState["ENTRY_NO_SCORE"] = "entry-no-score";
+    EntryState["ENTRY_DEFAULT_WIN"] = "entry-default-win";
+    EntryState["ENTRY_COMPLETE"] = "entry-complete";
+})(EntryState || (EntryState = {}));
 (function ($) {
     var Option = /** @class */ (function () {
         function Option(val) {
@@ -64,31 +73,11 @@ var __extends = (this && this.__extends) || (function () {
         };
         return Option;
     }());
-    var Score = /** @class */ (function (_super) {
-        __extends(Score, _super);
-        function Score() {
-            return _super !== null && _super.apply(this, arguments) || this;
-        }
-        Score.of = function (val) {
-            var type = typeof val;
-            var expected = "number";
-            if (val !== null && type !== expected) {
-                throw new Error("Invalid score format, expected " + expected + ", got " + type);
-            }
-            return _super.of.call(this, val);
-        };
-        Score.empty = function () {
-            return Option.empty();
-        };
-        return Score;
-    }(Option));
     var ResultObject = /** @class */ (function () {
-        function ResultObject(first, second, userData, teamANumber, teamBNumber) {
+        function ResultObject(first, second, matchData) {
             this.first = first;
             this.second = second;
-            this.userData = userData;
-            this.teamANumber = teamANumber;
-            this.teamBNumber = teamBNumber;
+            this.matchData = matchData;
             if (!first || !second) {
                 throw new Error("Cannot create ResultObject with undefined scores");
             }
@@ -140,7 +129,7 @@ var __extends = (this && this.__extends) || (function () {
             set: function (value) {
                 this.nameOrGetter = value;
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         // Recursively check if branch ends into a BYE
@@ -182,7 +171,7 @@ var __extends = (this && this.__extends) || (function () {
                         return BranchType.END;
                     }
                     else {
-                        throw new Error("Unexpected exception type (message: \"" + e.message + "\")");
+                        throw new Error("Unexpected exception type (message: \"".concat(e.message, "\")"));
                     }
                 }
             }
@@ -235,7 +224,7 @@ var __extends = (this && this.__extends) || (function () {
         // Arbitrary (either parent) source is required so that branch emptiness
         // can be determined by traversing to the beginning.
         MatchResult.emptyTeam = function (source, sibling) {
-            var teamBlock = new TeamBlock(source, Option.empty(), Option.empty(), Option.empty(), Score.empty());
+            var teamBlock = new TeamBlock(source, Option.empty(), Option.empty(), Option.empty(), Option.empty());
             teamBlock.sibling = function () { return sibling; };
             return teamBlock;
         };
@@ -249,14 +238,6 @@ var __extends = (this && this.__extends) || (function () {
         };
         return MatchResult;
     }());
-    var EntryState;
-    (function (EntryState) {
-        EntryState["EMPTY_BYE"] = "empty-bye";
-        EntryState["EMPTY_TBD"] = "empty-tbd";
-        EntryState["ENTRY_NO_SCORE"] = "entry-no-score";
-        EntryState["ENTRY_DEFAULT_WIN"] = "entry-default-win";
-        EntryState["ENTRY_COMPLETE"] = "entry-complete";
-    })(EntryState || (EntryState = {}));
     function depth(a) {
         function df(arrayOrValue, d) {
             if (arrayOrValue instanceof Array) {
@@ -374,30 +355,35 @@ var __extends = (this && this.__extends) || (function () {
     var endOfBranch = function () {
         throw new EndOfBranchException();
     };
-    var winnerMatchSources = function (teams, m) { return function () {
-        var teamA = new TeamBlock(endOfBranch, function () { return teams[m][0]; }, Option.of(Order.first()), Option.of(m * 2), Score.empty());
-        var teamB = new TeamBlock(endOfBranch, function () { return teams[m][1]; }, Option.of(Order.second()), Option.of(m * 2 + 1), Score.empty());
-        teamA.sibling = function () { return teamB; };
-        teamB.sibling = function () { return teamA; };
-        return [
-            {
-                source: function () { return teamA; }
-            },
-            {
-                source: function () { return teamB; }
-            }
-        ];
-    }; };
-    var winnerAlignment = function (match, skipConsolationRound) { return function (tC) {
-        tC.css("top", "");
-        tC.css("position", "absolute");
-        if (skipConsolationRound) {
-            tC.css("top", match.el.height() / 2 - tC.height() / 2 + "px");
-        }
-        else {
-            tC.css("bottom", -tC.height() / 2 + "px");
-        }
-    }; };
+    var winnerMatchSources = function (teams, m) {
+        return function () {
+            var teamA = new TeamBlock(endOfBranch, function () { return teams[m][0]; }, Option.of(Order.first()), Option.of(m * 2), Option.empty());
+            var teamB = new TeamBlock(endOfBranch, function () { return teams[m][1]; }, Option.of(Order.second()), Option.of(m * 2 + 1), Option.empty());
+            teamA.sibling = function () { return teamB; };
+            teamB.sibling = function () { return teamA; };
+            return [
+                {
+                    source: function () { return teamA; }
+                },
+                {
+                    source: function () { return teamB; }
+                }
+            ];
+        };
+    };
+    var winnerAlignment = function (match, skipConsolationRound) {
+        return function (tC) {
+            // Unless this is reset, the height calculation below will behave
+            // incorrectly. No idea why.
+            tC.css("top", "");
+            var height = tC.height();
+            tC.css({
+                bottom: skipConsolationRound ? "" : -height / 2 + "px",
+                position: "absolute",
+                top: skipConsolationRound ? match.el.height() / 2 - height / 2 + "px" : ""
+            });
+        };
+    };
     function prepareWinners(winners, teams, isSingleElimination, opts, skipGrandFinalComeback) {
         var roundCount = Math.log(teams.length * 2) / Math.log(2);
         var matchCount = teams.length;
@@ -431,81 +417,88 @@ var __extends = (this && this.__extends) || (function () {
                 var consol_1 = round.addMatch(function () { return [{ source: third_1 }, { source: fourth_1 }]; }, Option.of(consolationBubbles));
                 consol_1.setAlignCb(function (tC) {
                     var height = winners.el.height() / 2;
-                    consol_1.el.css("height", height + "px");
-                    var topShift = tC.height() / 2 + opts.matchMargin;
-                    tC.css("top", topShift + "px");
+                    consol_1.el.css({ height: height });
+                    var top = tC.height() / 2 + opts.matchMargin;
+                    tC.css({ top: top });
                 });
                 consol_1.setConnectorCb(Option.empty());
             }
         }
     }
-    var loserMatchSources = function (winners, losers, matchCount, m, n, r) { return function () {
-        /* first round comes from winner bracket */
-        if (n % 2 === 0 && r === 0) {
-            return [
-                {
-                    source: function () {
-                        return winners
-                            .round(0)
-                            .match(m * 2)
-                            .loser();
+    var loserMatchSources = function (winners, losers, matchCount, m, n, r) {
+        return function () {
+            /* first round comes from winner bracket */
+            if (n % 2 === 0 && r === 0) {
+                return [
+                    {
+                        source: function () {
+                            return winners
+                                .round(0)
+                                .match(m * 2)
+                                .loser();
+                        }
+                    },
+                    {
+                        source: function () {
+                            return winners
+                                .round(0)
+                                .match(m * 2 + 1)
+                                .loser();
+                        }
                     }
-                },
-                {
-                    source: function () {
-                        return winners
-                            .round(0)
-                            .match(m * 2 + 1)
-                            .loser();
+                ];
+            }
+            else {
+                /* match with dropped */
+                /* To maximize the time it takes for two teams to play against
+                 * eachother twice, WB losers are assigned in reverse order
+                 * every second round of LB */
+                var winnerMatch_1 = r % 2 === 0 ? matchCount - m - 1 : m;
+                return [
+                    {
+                        source: function () {
+                            return losers
+                                .round(r * 2)
+                                .match(m)
+                                .winner();
+                        }
+                    },
+                    {
+                        source: function () {
+                            return winners
+                                .round(r + 1)
+                                .match(winnerMatch_1)
+                                .loser();
+                        }
                     }
-                }
-            ];
-        }
-        else {
-            /* match with dropped */
-            /* To maximize the time it takes for two teams to play against
-             * eachother twice, WB losers are assigned in reverse order
-             * every second round of LB */
-            var winnerMatch_1 = r % 2 === 0 ? matchCount - m - 1 : m;
-            return [
-                {
-                    source: function () {
-                        return losers
-                            .round(r * 2)
-                            .match(m)
-                            .winner();
-                    }
-                },
-                {
-                    source: function () {
-                        return winners
-                            .round(r + 1)
-                            .match(winnerMatch_1)
-                            .loser();
-                    }
-                }
-            ];
-        }
-    }; };
-    var loserAlignment = function (teamCon, match) { return function () {
-        return teamCon.css("top", match.el.height() / 2 - teamCon.height() / 2 + "px");
-    }; };
-    var mkMatchConnector = function (centerConnectors) { return function (tC, match) {
-        // inside lower bracket
-        var connectorOffset = tC.height() / 4;
-        var center = { height: 0, shift: connectorOffset * 2 };
-        return match
-            .winner()
-            .order.map(function (order) {
-            return order.map(centerConnectors ? center : { height: 0, shift: connectorOffset }, centerConnectors
-                ? center
-                : {
-                    height: -connectorOffset * 2,
-                    shift: connectorOffset
-                });
-        })
-            .orElse(center);
-    }; };
+                ];
+            }
+        };
+    };
+    var loserAlignment = function (teamCon, match) {
+        return function () {
+            var top = match.el.height() / 2 - teamCon.height() / 2;
+            return teamCon.css({ top: top });
+        };
+    };
+    var mkMatchConnector = function (centerConnectors) {
+        return function (tC, match) {
+            // inside lower bracket
+            var connectorOffset = tC.height() / 4;
+            var center = { height: 0, shift: connectorOffset * 2 };
+            return match
+                .winner()
+                .order.map(function (order) {
+                    return order.map(centerConnectors ? center : { height: 0, shift: connectorOffset }, centerConnectors
+                        ? center
+                        : {
+                            height: -connectorOffset * 2,
+                            shift: connectorOffset
+                        });
+                })
+                .orElse(center);
+        };
+    };
     function prepareLosers(winners, losers, teamCount, skipGrandFinalComeback, centerConnectors) {
         var roundCount = Math.log(teamCount * 2) / Math.log(2) - 1;
         var matchCount = teamCount / 2;
@@ -536,12 +529,14 @@ var __extends = (this && this.__extends) || (function () {
             matchCount /= 2;
         }
     }
-    function prepareFinals(finals, winners, losers, opts, topCon, resizeContainer) {
+    function prepareFinals(finals, winners, losers, opts, resizeContainer) {
         var round = finals.addRound(Option.empty());
-        var finalMatch = round.addMatch(function () { return [
-            { source: function () { return winners.winner(); } },
-            { source: function () { return losers.winner(); } }
-        ]; }, Option.of(function (match) {
+        var finalMatch = round.addMatch(function () {
+            return [
+                { source: function () { return winners.winner(); } },
+                { source: function () { return losers.winner(); } }
+            ];
+        }, Option.of(function (match) {
             /* Track if container has been resized for final rematch */
             var isResized = false;
             /* LB winner won first final match, need a new one */
@@ -570,21 +565,23 @@ var __extends = (this && this.__extends) || (function () {
                 };
                 var finalRound = finals.addRound(Option.of(doRenderCb));
                 /* keep order the same, WB winner top, LB winner below */
-                var match2_1 = finalRound.addMatch(function () { return [
-                    { source: function () { return match.first(); } },
-                    { source: function () { return match.second(); } }
-                ]; }, Option.of(winnerBubbles));
+                var match2_1 = finalRound.addMatch(function () {
+                    return [
+                        { source: function () { return match.first(); } },
+                        { source: function () { return match.second(); } }
+                    ];
+                }, Option.of(winnerBubbles));
                 match.setConnectorCb(Option.of(function (tC) { return ({ height: 0, shift: tC.height() / 2 }); }));
                 match2_1.setConnectorCb(Option.empty());
                 match2_1.setAlignCb(function (tC) {
                     var height = winners.el.height() + losers.el.height();
-                    match2_1.el.css("height", height + "px");
-                    var topShift = (winners.el.height() / 2 +
+                    match2_1.el.css({ height: height });
+                    var top = (winners.el.height() / 2 +
                         winners.el.height() +
                         losers.el.height() / 2) /
                         2 -
                         tC.height();
-                    tC.css("top", topShift + "px");
+                    tC.css({ top: top });
                 });
                 return false;
             }
@@ -599,44 +596,44 @@ var __extends = (this && this.__extends) || (function () {
             }
         }));
         finalMatch.setAlignCb(function (tC) {
-            var height = winners.el.height() + losers.el.height();
-            if (!opts.skipConsolationRound) {
-                height /= 2;
-            }
-            finalMatch.el.css("height", height + "px");
-            var topShift = (winners.el.height() / 2 +
+            var height = (winners.el.height() + losers.el.height()) /
+                (opts.skipConsolationRound ? 1 : 2);
+            finalMatch.el.css({ height: height });
+            var top = (winners.el.height() / 2 +
                 winners.el.height() +
                 losers.el.height() / 2) /
                 2 -
                 tC.height();
-            tC.css("top", topShift + "px");
+            tC.css({ top: top });
         });
         if (!opts.skipConsolationRound) {
             var prev_1 = losers
                 .final()
                 .getRound()
                 .prev();
-            var consol_2 = round.addMatch(function () { return [
-                {
-                    source: function () {
-                        return prev_1
-                            .get()
-                            .match(0)
-                            .loser();
-                    }
-                },
-                { source: function () { return losers.loser(); } }
-            ]; }, Option.of(consolationBubbles));
+            var consol_2 = round.addMatch(function () {
+                return [
+                    {
+                        source: function () {
+                            return prev_1
+                                .get()
+                                .match(0)
+                                .loser();
+                        }
+                    },
+                    { source: function () { return losers.loser(); } }
+                ];
+            }, Option.of(consolationBubbles));
             consol_2.setAlignCb(function (tC) {
                 var height = (winners.el.height() + losers.el.height()) / 2;
-                consol_2.el.css("height", height + "px");
-                var topShift = (winners.el.height() / 2 +
+                consol_2.el.css({ height: height });
+                var top = (winners.el.height() / 2 +
                     winners.el.height() +
                     losers.el.height() / 2) /
                     2 +
                     tC.height() / 2 -
                     height;
-                tC.css("top", topShift + "px");
+                tC.css({ top: top });
             });
             finalMatch.setConnectorCb(Option.empty());
             consol_2.setConnectorCb(Option.empty());
@@ -652,19 +649,19 @@ var __extends = (this && this.__extends) || (function () {
             var _a = winners
                 .winner()
                 .order.map(function (order) {
-                return order.map({
-                    height: matchupOffset + connectorOffset * 2,
-                    shift: connectorOffset * (opts.centerConnectors ? 2 : 1)
-                }, {
-                    height: matchupOffset +
-                        connectorOffset * (opts.centerConnectors ? 2 : 0),
-                    shift: connectorOffset * (opts.centerConnectors ? 2 : 3)
-                });
-            })
+                    return order.map({
+                        height: matchupOffset + connectorOffset * 2,
+                        shift: connectorOffset * (opts.centerConnectors ? 2 : 1)
+                    }, {
+                        height: matchupOffset +
+                            connectorOffset * (opts.centerConnectors ? 2 : 0),
+                        shift: connectorOffset * (opts.centerConnectors ? 2 : 3)
+                    });
+                })
                 .orElse({
-                height: matchupOffset + connectorOffset * (opts.centerConnectors ? 2 : 1),
-                shift: connectorOffset * 2
-            }), height = _a.height, shift = _a.shift;
+                    height: matchupOffset + connectorOffset * (opts.centerConnectors ? 2 : 1),
+                    shift: connectorOffset * 2
+                }), height = _a.height, shift = _a.shift;
             return { height: height - tC.height() / 2, shift: shift };
         }));
         losers.final().setConnectorCb(Option.of(function (tC) {
@@ -678,47 +675,47 @@ var __extends = (this && this.__extends) || (function () {
             var _a = losers
                 .winner()
                 .order.map(function (order) {
-                return order.map({
-                    height: matchupOffset +
-                        connectorOffset * (opts.centerConnectors ? 2 : 0),
-                    shift: connectorOffset * (opts.centerConnectors ? 2 : 3)
-                }, {
-                    height: matchupOffset + connectorOffset * 2,
-                    shift: connectorOffset * (opts.centerConnectors ? 2 : 1)
-                });
-            })
+                    return order.map({
+                        height: matchupOffset +
+                            connectorOffset * (opts.centerConnectors ? 2 : 0),
+                        shift: connectorOffset * (opts.centerConnectors ? 2 : 3)
+                    }, {
+                        height: matchupOffset + connectorOffset * 2,
+                        shift: connectorOffset * (opts.centerConnectors ? 2 : 1)
+                    });
+                })
                 .orElse({
-                height: matchupOffset + connectorOffset * (opts.centerConnectors ? 2 : 1),
-                shift: connectorOffset * 2
-            }), height = _a.height, shift = _a.shift;
+                    height: matchupOffset + connectorOffset * (opts.centerConnectors ? 2 : 1),
+                    shift: connectorOffset * 2
+                }), height = _a.height, shift = _a.shift;
             return { height: -(height + tC.height() / 2), shift: -shift };
         }));
     }
     function teamState(team, opponent, score) {
         return team.name
             .map(function () {
-            return score
-                .map(function () { return EntryState.ENTRY_COMPLETE; })
-                .orElseGet(function () {
-                return opponent.emptyBranch() === BranchType.BYE
-                    ? EntryState.ENTRY_DEFAULT_WIN
-                    : EntryState.ENTRY_NO_SCORE;
-            });
-        })
+                return score
+                    .map(function () { return EntryState.ENTRY_COMPLETE; })
+                    .orElseGet(function () {
+                        return opponent.emptyBranch() === BranchType.BYE
+                            ? EntryState.ENTRY_DEFAULT_WIN
+                            : EntryState.ENTRY_NO_SCORE;
+                    });
+            })
             .orElseGet(function () {
-            var type = team.emptyBranch();
-            switch (type) {
-                case BranchType.BYE:
-                    return EntryState.EMPTY_BYE;
-                case BranchType.TBD:
-                    return EntryState.EMPTY_TBD;
-                default:
-                    throw new Error("Unexpected branch type " + type);
-            }
-        });
+                var type = team.emptyBranch();
+                switch (type) {
+                    case BranchType.BYE:
+                        return EntryState.EMPTY_BYE;
+                    case BranchType.TBD:
+                        return EntryState.EMPTY_TBD;
+                    default:
+                        throw new Error("Unexpected branch type ".concat(type));
+                }
+            });
     }
     var Round = /** @class */ (function () {
-        function Round(bracket, previousRound, roundNumber, 
+        function Round(bracket, previousRound, roundNumber,
             // TODO: results should be enforced to be correct by now
             roundResults, doRenderCb, mkMatch, isFirstBracket, opts) {
             this.bracket = bracket;
@@ -729,15 +726,15 @@ var __extends = (this && this.__extends) || (function () {
             this.mkMatch = mkMatch;
             this.isFirstBracket = isFirstBracket;
             this.opts = opts;
-            this.containerWidth = this.opts.teamWidth + this.opts.scoreWidth;
-            this.roundCon = $("<div class=\"round\" style=\"width: " + this.containerWidth + "px; margin-right: " + this.opts.roundMargin + "px\"/>");
+            this.containerWidth = this.opts.disableScoring ? this.opts.teamWidth : this.opts.teamWidth + this.opts.scoreWidth;
+            this.roundCon = $("<div class=\"round\" style=\"width: ".concat(this.containerWidth, "px; margin-right: ").concat(this.opts.roundMargin, "px\"/>"));
             this.matches = [];
         }
         Object.defineProperty(Round.prototype, "el", {
             get: function () {
                 return this.roundCon;
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         Round.prototype.addMatch = function (teamCb, renderCb) {
@@ -765,8 +762,8 @@ var __extends = (this && this.__extends) || (function () {
                 ];
             var teamA = function () { return teams[0].source(); };
             var teamB = function () { return teams[1].source(); };
-            var teamABlock = new TeamBlock(teamA, teamA().name, Option.of(Order.first()), teamA().seed, Score.empty());
-            var teamBBlock = new TeamBlock(teamB, teamB().name, Option.of(Order.second()), teamB().seed, Score.empty());
+            var teamABlock = new TeamBlock(teamA, teamA().name, Option.of(Order.first()), teamA().seed, Option.empty());
+            var teamBBlock = new TeamBlock(teamB, teamB().name, Option.of(Order.second()), teamB().seed, Option.empty());
             teamABlock.sibling = function () { return teamBBlock; };
             teamBBlock.sibling = function () { return teamABlock; };
             var matchResult = new MatchResult(teamABlock, teamBBlock);
@@ -794,7 +791,9 @@ var __extends = (this && this.__extends) || (function () {
             this.matches.forEach(function (m) { return m.render(); });
         };
         Round.prototype.results = function () {
-            return this.matches.reduce(function (agg, m) { return agg.concat([m.results()]); }, []);
+            return this.matches.reduce(function (agg, m) {
+                return agg.concat([m.results()]);
+            }, []);
         };
         return Round;
     }());
@@ -811,16 +810,18 @@ var __extends = (this && this.__extends) || (function () {
             get: function () {
                 return this.bracketCon;
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         Bracket.prototype.addRound = function (doRenderCb) {
             var id = this.rounds.length;
-            var previous = id > 0 ? Option.of(this.rounds[id - 1]) : Option.empty();
+            var previous = id > 0
+                ? Option.of(this.rounds[id - 1])
+                : Option.empty();
             // Rounds may be undefined if init score array does not match number of teams
             var roundResults = this.initResults.map(function (r) {
                 return r[id] === undefined
-                    ? new ResultObject(Score.empty(), Score.empty(), undefined)
+                    ? new ResultObject(Option.empty(), Option.empty(), undefined)
                     : r[id];
             });
             var round = new Round(this, previous, id, roundResults, doRenderCb, this.mkMatch, this.isFirstBracket, this.opts);
@@ -853,10 +854,13 @@ var __extends = (this && this.__extends) || (function () {
             for (var _i = 0, _a = this.rounds; _i < _a.length; _i++) {
                 var round = _a[_i];
                 round.render();
+
             }
         };
         Bracket.prototype.results = function () {
-            return this.rounds.reduce(function (agg, r) { return agg.concat([r.results()]); }, []);
+            return this.rounds.reduce(function (agg, r) {
+                return agg.concat([r.results()]);
+            }, []);
         };
         return Bracket;
     }());
@@ -876,38 +880,30 @@ var __extends = (this && this.__extends) || (function () {
         }
         return { height: height, drop: true };
     };
-    function mkConnector(roundMargin, connector, teamCon, align) {
+    function createConnector(roundMargin, connector, align) {
+        var _a, _b;
         var shift = connector.shift;
-        var _a = calculateHeight(connector.height), height = _a.height, drop = _a.drop;
+        var _c = calculateHeight(connector.height), height = _c.height, drop = _c.drop;
         var width = roundMargin / 2;
-        var src = $('<div class="connector"></div>').appendTo(teamCon);
-        src.css("height", height);
-        src.css("width", width + "px");
-        src.css(align, -width - 2 + "px");
         // Subtract 1 due to line thickness and alignment mismatch caused by
         // combining top and bottom alignment
-        if (shift >= 0) {
-            src.css("top", shift - 1 + "px");
-        }
-        else {
-            src.css("bottom", -shift - 1 + "px");
-        }
-        if (drop) {
-            src.css("border-bottom", "none");
-        }
-        else {
-            src.css("border-top", "none");
-        }
-        var dst = $('<div class="connector"></div>').appendTo(src);
-        dst.css("width", width + "px");
-        dst.css(align, -width + "px");
-        if (drop) {
-            dst.css("bottom", "0px");
-        }
-        else {
-            dst.css("top", "0px");
-        }
-        return src;
+        var doShift = shift >= 0;
+        var src = $('<div class="connector"></div>').css((_a = {},
+            _a[align] = -width - 2,
+            _a.borderBottom = drop ? "none" : "",
+            _a.borderTop = !drop ? "none" : "",
+            _a.bottom = !doShift ? -shift - 1 : "",
+            _a.height = height,
+            _a.top = doShift ? shift - 1 : "",
+            _a.width = width,
+            _a));
+        var dst = $('<div class="connector"></div>').css((_b = {},
+            _b[align] = -width,
+            _b.bottom = drop ? 0 : "",
+            _b.top = !drop ? 0 : "",
+            _b.width = width,
+            _b));
+        return src.append(dst);
     }
     function countRounds(teamCount, isSingleElimination, skipGrandFinalComeback, skipSecondaryFinal, results) {
         if (isSingleElimination) {
@@ -932,11 +928,16 @@ var __extends = (this && this.__extends) || (function () {
         output.results = output.results.map(function (brackets) {
             return brackets.map(function (rounds) {
                 return rounds.map(function (matches) {
-                    var matchData = [matches.first.toNull(), matches.second.toNull(), matches?.teamANumber?.val, matches?.teamBNumber?.val];
-                    if (matches.userData !== undefined) {
-                        matchData.push(matches.userData);
+                    if (matches.matchData !== undefined) {
+                        return [
+                            matches.first.toNull(),
+                            matches.second.toNull(),
+                            matches.matchData
+                        ];
                     }
-                    return matchData;
+                    else {
+                        return [matches.first.toNull(), matches.second.toNull()];
+                    }
                 });
             });
         });
@@ -957,20 +958,19 @@ var __extends = (this && this.__extends) || (function () {
         };
         return ResultId;
     }());
-    function teamElement(roundNumber, match, team, opponent, isReady, isFirstBracket, opts, resultId, topCon, renderAll) {
+    function createTeam(roundNumber, match, team, opponent, isReady, isFirstBracket, opts, resultId, topCon, renderAll) {
         var resultIdAttribute = team.name.isEmpty() || opponent.name.isEmpty()
             ? ""
-            : "data-resultid=\"result-" + resultId.getNext() + "\"";
-        var sEl = $("<div class=\"score\" style=\"width: " + opts.scoreWidth + "px;\" " + resultIdAttribute + "></div>");
+            : "data-resultid=\"result-".concat(resultId.getNext(), "\"");
+        var sEl = $("<div class=\"score\" style=\"width: ".concat(opts.scoreWidth, "px;\" ").concat(resultIdAttribute, ">"));
         var score = team.name.isEmpty() || opponent.name.isEmpty() || !isReady
             ? Option.empty()
-            : team.score.map(function (s) { return "" + s; });
-        var scoreString = score.orElse("--");
+            : team.score;
+        var scoreString = opts.extension.scoreToString(score.toNull());
         sEl.text(scoreString);
-        var tEl = $("<div class=\"team\" style=\"width: " + (opts.teamWidth +
-            opts.scoreWidth) + "px;\"></div>");
-        var nEl = $("<div class=\"label\" style=\"width: " + opts.teamWidth + "px;\"></div>").appendTo(tEl);
-        opts.decorator.render(nEl, team.name.toNull(), scoreString, teamState(team, opponent, score));
+        var tEl = $("<div class=\"team\" style=\"width: ".concat(opts.disableScoring ? opts.teamWidth : opts.teamWidth + opts.scoreWidth, "px;\"></div>"));
+        var nEl = $("<div class=\"label\" style=\"width: ".concat(opts.disableScoring ? opts.teamWidth : opts.teamWidth + opts.scoreWidth, "px;\"></div>")).appendTo(tEl);
+        opts.decorator.render(nEl, team.name.toNull(), team.score.toNull(), teamState(team, opponent, team.score));
         team.seed.forEach(function (seed) {
             tEl.attr("data-teamid", seed);
         });
@@ -983,12 +983,15 @@ var __extends = (this && this.__extends) || (function () {
         else if (match.loser().name === team.name) {
             tEl.addClass("lose");
         }
-        tEl.append(sEl);
+        if (!opts.disableScoring) {
+            tEl.append(sEl);
+        }
         // Only first round of BYEs can be edited
         if ((!team.name.isEmpty() ||
             (team.name.isEmpty() && roundNumber === 0 && isFirstBracket)) &&
             typeof opts.save === "function") {
             if (!opts.disableTeamEdit) {
+
                 nEl.addClass("editable");
                 nEl.click(function () {
                     var span = $(this);
@@ -1010,7 +1013,26 @@ var __extends = (this && this.__extends) || (function () {
                     editor();
                 });
             }
-            if (!team.name.isEmpty() && !opponent.name.isEmpty() && isReady) {
+            else if (opts.disableScoring) {
+                tEl.on('save', () => renderAll(true))
+                tEl.click(function () {
+
+                    if (opts.extension.scoreToString(score.toNull()) === "--" ||
+                        opts.extension.scoreToString(score.toNull()) === "0") {
+                        team.score = Option.of(opts.extension.evaluateScore("1", team.score.toNull()));
+                        team.sibling().score = Option.of(opts.extension.evaluateScore("0", team.sibling().score.toNull()));
+                    }
+                    else if (opts.extension.scoreToString(score.toNull()) === "1") {
+                        team.score = Option.of(opts.extension.evaluateScore("0", team.score.toNull()));
+                        //  team.sibling().score = Option.of(opts.extension.evaluateScore("1", team.sibling().score.toNull()));
+                    }
+                    renderAll(true);
+                });
+            }
+            if (!team.name.isEmpty() &&
+                !opponent.name.isEmpty() &&
+                isReady &&
+                !opts.disableScoring) {
                 var rId_1 = resultId.get();
                 sEl.addClass("editable");
                 sEl.click(function () {
@@ -1043,16 +1065,13 @@ var __extends = (this && this.__extends) || (function () {
                             }
                         });
                         input.blur(function () {
-                            var val = input.val();
-                            if ((!val || !isNumber(val)) && !isNumber(team.score)) {
-                                val = "0";
-                            }
-                            else if ((!val || !isNumber(val)) && isNumber(team.score)) {
+                            var val = opts.extension.evaluateScore(input.val(), team.score.toNull());
+                            if (val === null) {
                                 val = team.score;
                             }
                             span.html(val);
                             if (isNumber(val)) {
-                                team.score = Score.of(parseInt(val, 10));
+                                team.score = Option.of(val);
                                 renderAll(true);
                             }
                             span.click(editor);
@@ -1062,11 +1081,11 @@ var __extends = (this && this.__extends) || (function () {
                 });
             }
         }
+
         return tEl;
     }
     var Match = /** @class */ (function () {
         function Match(round, match, seed, results, renderCb, isFirstBracket, opts, resultId, topCon, renderAll) {
-     
             this.round = round;
             this.match = match;
             this.seed = seed;
@@ -1081,23 +1100,19 @@ var __extends = (this && this.__extends) || (function () {
             this.teamCon = $('<div class="teamContainer"></div>');
             this.alignCb = null;
             this.matchUserData = !results.isEmpty()
-                ? results.get().userData
+                ? results.get().matchData
                 : undefined;
             if (!opts.save) {
                 // The hover and click callbacks are bound by jQuery to the element
                 var userData_1 = this.matchUserData;
-                if (opts.onMatchHover) {
-                    this.teamCon.hover(function () {
-                        opts.onMatchHover(userData_1, true);
-                    }, function () {
-                        opts.onMatchHover(userData_1, false);
-                    });
-                }
-                if (opts.onMatchClick) {
-                    this.teamCon.click(function () {
-                        opts.onMatchClick(userData_1);
-                    });
-                }
+                this.teamCon.hover(function () {
+                    opts.onMatchHover(userData_1, true);
+                }, function () {
+                    opts.onMatchHover(userData_1, false);
+                });
+                this.teamCon.click(function () {
+                    opts.onMatchClick(userData_1);
+                });
             }
             match.a.name = match.a.source().name;
             match.b.name = match.b.source().name;
@@ -1107,15 +1122,15 @@ var __extends = (this && this.__extends) || (function () {
             /* todo: would be nice to have in preload check, maybe too much work */
             if ((!match.a.name || !match.b.name) &&
                 (isNumber(match.a.score) || isNumber(match.b.score))) {
-                console.warn("ERROR IN SCORE DATA: " + match.a.source().name + ": " + match.a.score + ", " + match.b.source().name + ": " + match.b.score);
-                match.a.score = match.b.score = Score.empty();
+                console.warn("ERROR IN SCORE DATA: ".concat(match.a.source().name, ": ").concat(match.a.score, ", ").concat(match.b.source().name, ": ").concat(match.b.score));
+                match.a.score = match.b.score = Option.empty();
             }
         }
         Object.defineProperty(Match.prototype, "el", {
             get: function () {
                 return this.matchCon;
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         Match.prototype.getRound = function () {
@@ -1132,46 +1147,46 @@ var __extends = (this && this.__extends) || (function () {
             var result = cb
                 .map(function (connectorCb) { return connectorCb(_this.teamCon, _this); })
                 .orElseGet(function () {
-                if (_this.seed % 2 === 0) {
-                    // dir == down
-                    return _this.winner()
-                        .order.map(function (order) {
-                        return order.map({
-                            height: matchupOffset,
-                            shift: connectorOffset * (_this.opts.centerConnectors ? 2 : 1)
-                        }, {
-                            height: matchupOffset -
-                                connectorOffset * (_this.opts.centerConnectors ? 0 : 2),
-                            shift: connectorOffset * (_this.opts.centerConnectors ? 2 : 3)
-                        });
-                    })
-                        .orElse({
-                        height: matchupOffset -
-                            connectorOffset * (_this.opts.centerConnectors ? 0 : 1),
-                        shift: connectorOffset * 2
-                    });
-                }
-                else {
-                    // dir == up
-                    return _this.winner()
-                        .order.map(function (order) {
-                        return order.map({
-                            height: -matchupOffset +
-                                connectorOffset * (_this.opts.centerConnectors ? 0 : 2),
-                            shift: -connectorOffset * (_this.opts.centerConnectors ? 2 : 3)
-                        }, {
-                            height: -matchupOffset,
-                            shift: -connectorOffset * (_this.opts.centerConnectors ? 2 : 1)
-                        });
-                    })
-                        .orElse({
-                        height: -matchupOffset +
-                            connectorOffset * (_this.opts.centerConnectors ? 0 : 1),
-                        shift: -connectorOffset * 2
-                    });
-                }
-            });
-            this.teamCon.append(mkConnector(this.opts.roundMargin, result, this.teamCon, align));
+                    if (_this.seed % 2 === 0) {
+                        // dir == down
+                        return _this.winner()
+                            .order.map(function (order) {
+                                return order.map({
+                                    height: matchupOffset,
+                                    shift: connectorOffset * (_this.opts.centerConnectors ? 2 : 1)
+                                }, {
+                                    height: matchupOffset -
+                                        connectorOffset * (_this.opts.centerConnectors ? 0 : 2),
+                                    shift: connectorOffset * (_this.opts.centerConnectors ? 2 : 3)
+                                });
+                            })
+                            .orElse({
+                                height: matchupOffset -
+                                    connectorOffset * (_this.opts.centerConnectors ? 0 : 1),
+                                shift: connectorOffset * 2
+                            });
+                    }
+                    else {
+                        // dir == up
+                        return _this.winner()
+                            .order.map(function (order) {
+                                return order.map({
+                                    height: -matchupOffset +
+                                        connectorOffset * (_this.opts.centerConnectors ? 0 : 2),
+                                    shift: -connectorOffset * (_this.opts.centerConnectors ? 2 : 3)
+                                }, {
+                                    height: -matchupOffset,
+                                    shift: -connectorOffset * (_this.opts.centerConnectors ? 2 : 1)
+                                });
+                            })
+                            .orElse({
+                                height: -matchupOffset +
+                                    connectorOffset * (_this.opts.centerConnectors ? 0 : 1),
+                                shift: -connectorOffset * 2
+                            });
+                    }
+                });
+            this.teamCon.append(createConnector(this.opts.roundMargin, result, align));
         };
         Match.prototype.winner = function () {
             return this.match.winner();
@@ -1209,12 +1224,14 @@ var __extends = (this && this.__extends) || (function () {
             }
             // Coerce truthy/falsy "isset()" for Typescript
             var isReady = !this.match.a.name.isEmpty() && !this.match.b.name.isEmpty();
-            this.teamCon.append(teamElement(this.round.roundNumber, this.match, this.match.a, this.match.b, isReady, this.isFirstBracket, this.opts, this.resultId, this.topCon, this.renderAll));
-            this.teamCon.append(teamElement(this.round.roundNumber, this.match, this.match.b, this.match.a, isReady, this.isFirstBracket, this.opts, this.resultId, this.topCon, this.renderAll));
+            this.teamCon.append(createTeam(this.round.roundNumber, this.match, this.match.a, this.match.b, isReady, this.isFirstBracket, this.opts, this.resultId, this.topCon, this.renderAll));
+            this.teamCon.append(createTeam(this.round.roundNumber, this.match, this.match.b, this.match.a, isReady, this.isFirstBracket, this.opts, this.resultId, this.topCon, this.renderAll));
             this.matchCon.appendTo(this.round.el);
             this.matchCon.append(this.teamCon);
-            this.el.css("height", this.round.bracket.el.height() / this.round.size() + "px");
-            this.teamCon.css("top", this.el.height() / 2 - this.teamCon.height() / 2 + "px");
+            var height = this.round.bracket.el.height() / this.round.size();
+            this.el.css({ height: height });
+            var top = this.el.height() / 2 - this.teamCon.height() / 2;
+            this.teamCon.css({ top: top });
             /* todo: move to class */
             if (this.alignCb !== null) {
                 this.alignCb(this.teamCon);
@@ -1228,9 +1245,9 @@ var __extends = (this && this.__extends) || (function () {
             // Either team is bye -> reset (mutate) scores from that match
             var hasBye = this.match.a.name.isEmpty() || this.match.b.name.isEmpty();
             if (hasBye) {
-                this.match.a.score = this.match.b.score = Score.empty();
+                this.match.a.score = this.match.b.score = Option.empty();
             }
-            return new ResultObject(this.match.a.score, this.match.b.score, this.matchUserData, this.match.a.nameOrGetter, this.match.b.nameOrGetter);
+            return new ResultObject(this.match.a.score, this.match.b.score, this.matchUserData);
         };
         return Match;
     }());
@@ -1239,7 +1256,7 @@ var __extends = (this && this.__extends) || (function () {
         return initResults.map(function (brackets) {
             return brackets.map(function (rounds) {
                 return rounds.map(function (matches) {
-                    return new ResultObject(Score.of(undefinedToNull(matches[0])), Score.of(undefinedToNull(matches[1])), matches[2]);
+                    return new ResultObject(Option.of(undefinedToNull(matches[0])), Option.of(undefinedToNull(matches[1])), matches[2]);
                 });
             });
         });
@@ -1247,26 +1264,54 @@ var __extends = (this && this.__extends) || (function () {
     var JqueryBracket = function (opts) {
         var resultId = new ResultId();
         var data = opts.init;
+
+        if (opts.autoSizeTeamWidth === true) {
+            var maxWidth = 0;
+            // Full structure must be made in case of user styles
+            if (document.getElementById("jquery-bracket-ruler") === null) {
+                $("<div class=\"jQBracket\">\n            <div class=\"bracket\">\n                <div class=\"round\">\n                    <div class=\"match\">\n                        <div class=\"teamContainer\">\n                            <div class=\"team\">\n                                <div id=\"jquery-bracket-ruler\" class=\"label\" style=\"visibility: hidden; white-space: nowrap\"></div>\n                            </div>\n                        </div>\n                    </div>\n                </div>\n            </div>\n           </div>\n          ").appendTo(opts.el.empty());
+            }
+            function visualLength(text) {
+                var ruler = document.getElementById("jquery-bracket-ruler");
+                if (ruler !== null) {
+                    ruler.innerHTML = text;
+                    return ruler.offsetWidth;
+                }
+                else {
+                    return -1;
+                }
+            }
+            for (var _i = 0, _a = opts.init.teams; _i < _a.length; _i++) {
+                var teamSet = _a[_i];
+                for (var _b = 0, teamSet_1 = teamSet; _b < teamSet_1.length; _b++) {
+                    var team = teamSet_1[_b];
+                    var length_1 = visualLength(team.toNull());
+                    if (length_1 > maxWidth) {
+                        maxWidth = Math.ceil(length_1);
+                    }
+                }
+            }
+            opts.teamWidth = maxWidth;
+        }
         var isSingleElimination = data.results.length <= 1;
         // 45 === team height x2 + 1px margin
         var height = data.teams.length * 45 + data.teams.length * opts.matchMargin;
         var topCon = $('<div class="jQBracket ' + opts.dir + '"></div>').appendTo(opts.el.empty());
         function resizeContainer() {
             var roundCount = countRounds(data.teams.length, isSingleElimination, opts.skipGrandFinalComeback, opts.skipSecondaryFinal, data.results);
-            if (!opts.disableToolbar) {
-                topCon.css("width", roundCount * (opts.teamWidth + opts.scoreWidth + opts.roundMargin) +
-                    40);
-            }
-            else {
-                topCon.css("width", roundCount * (opts.teamWidth + opts.scoreWidth + opts.roundMargin) +
-                    10);
-            }
-            // reserve space for consolation round
-            if (isSingleElimination &&
-                data.teams.length <= 2 &&
-                !opts.skipConsolationRound) {
-                topCon.css("height", height + 40);
-            }
+            topCon.css({
+                // reserve space for consolation round
+                height: isSingleElimination &&
+                    data.teams.length <= 2 &&
+                    !opts.skipConsolationRound
+                    ? height + 40
+                    : "",
+                width: opts.disableToolbar
+                    ? roundCount * (opts.teamWidth + opts.scoreWidth + opts.roundMargin) +
+                    10
+                    : roundCount * (opts.teamWidth + opts.scoreWidth + opts.roundMargin) +
+                    40
+            });
         }
         var w;
         var l;
@@ -1302,7 +1347,7 @@ var __extends = (this && this.__extends) || (function () {
             $.error("skipSecondaryFinal setting is viable only in double elimination mode");
         }
         if (!opts.disableToolbar) {
-            embedEditButtons(topCon, data, opts);
+            topCon.append(createToolbar(data, opts));
         }
         var fEl;
         var wEl;
@@ -1317,9 +1362,9 @@ var __extends = (this && this.__extends) || (function () {
             wEl = $('<div class="bracket"></div>').appendTo(topCon);
             lEl = $('<div class="loserBracket"></div>').appendTo(topCon);
         }
-        wEl.css("height", height);
+        wEl.css({ height: height });
         if (lEl) {
-            lEl.css("height", wEl.height() / 2);
+            lEl.css({ height: height / 2 });
         }
         resizeContainer();
         var mkMatch = function (round, match, seed, results, renderCb, isFirstBracket, options) {
@@ -1336,7 +1381,7 @@ var __extends = (this && this.__extends) || (function () {
         if (!isSingleElimination) {
             prepareLosers(w, l, data.teams.length, opts.skipGrandFinalComeback, opts.centerConnectors);
             if (!opts.skipGrandFinalComeback) {
-                prepareFinals(f, w, l, opts, topCon, resizeContainer);
+                prepareFinals(f, w, l, opts, resizeContainer);
             }
         }
         renderAll(false);
@@ -1346,189 +1391,253 @@ var __extends = (this && this.__extends) || (function () {
             }
         };
     };
-    function embedEditButtons(topCon, data, opts) {
-        var tools = $('<div class="tools"></div>').appendTo(topCon);
-        var inc = $('<span class="increment">+</span>').appendTo(tools);
-        inc.click(function () {
-            var len = data.teams.length;
-            for (var i = 0; i < len; i += 1) {
-                data.teams.push([Option.empty(), Option.empty()]);
-            }
-            return JqueryBracket(opts);
-        });
-        if ((data.teams.length > 1 && data.results.length === 1) ||
-            (data.teams.length > 2 && data.results.length === 3)) {
-            var dec = $('<span class="decrement">-</span>').appendTo(tools);
-            dec.click(function () {
-                if (data.teams.length > 1) {
-                    data.teams = data.teams.slice(0, data.teams.length / 2);
+    function createIncrementButton(onClick) {
+        return $('<span class="increment">+</span>').click(onClick);
+    }
+    function createDecrementButton(onClick) {
+        return $('<span class="decrement">-</span>').click(onClick);
+    }
+    function createDoubleEliminationButton(onClick) {
+        return $('<span class="doubleElimination">de</span>').click(onClick);
+    }
+    function createSingleEliminationButton(onClick) {
+        return $('<span class="singleElimination">se</span>').click(onClick);
+    }
+    function createToolbar(data, opts) {
+        var teamCount = data.teams.length;
+        var resultCount = data.results.length;
+        var incrementButton = function () {
+            return createIncrementButton(function () {
+                for (var i = 0; i < teamCount; i += 1) {
+                    data.teams.push([Option.empty(), Option.empty()]);
+                }
+                return JqueryBracket(opts);
+            });
+        };
+        var decrementButton = function () {
+            return createDecrementButton(function () {
+                if (teamCount > 1) {
+                    data.teams = data.teams.slice(0, teamCount / 2);
                     return JqueryBracket(opts);
                 }
             });
-        }
-        if (data.results.length === 1 && data.teams.length > 1) {
-            var type = $('<span class="doubleElimination">de</span>').appendTo(tools);
-            type.click(function () {
-                if (data.teams.length > 1 && data.results.length < 3) {
+        };
+        var doubleEliminationButton = function () {
+            return createDoubleEliminationButton(function () {
+                if (teamCount > 1 && resultCount < 3) {
                     data.results.push([], []);
                     return JqueryBracket(opts);
                 }
             });
-        }
-        else if (data.results.length === 3 && data.teams.length > 1) {
-            var type = $('<span class="singleElimination">se</span>').appendTo(tools);
-            type.click(function () {
-                if (data.results.length === 3) {
+        };
+        var singleEliminationButton = function () {
+            return createSingleEliminationButton(function () {
+                if (resultCount === 3) {
                     data.results = data.results.slice(0, 1);
                     return JqueryBracket(opts);
                 }
             });
+        };
+        var tools = $('<div class="tools"></div>');
+        tools.append(incrementButton());
+        if ((teamCount > 1 && resultCount === 1) ||
+            (teamCount > 2 && resultCount === 3)) {
+            tools.append(decrementButton());
         }
+        if (resultCount === 1 && teamCount > 1) {
+            tools.append(doubleEliminationButton());
+        }
+        else if (resultCount === 3 && teamCount > 1) {
+            tools.append(singleEliminationButton());
+        }
+        return tools;
     }
-    var assertNumber = function (opts, field) {
-        if (opts.hasOwnProperty(field)) {
-            var expectedType = "number";
-            var type = typeof opts[field];
-            if (type !== expectedType) {
-                throw new Error("Option \"" + field + "\" is " + type + " instead of " + expectedType);
-            }
+    var getNumber = function (expected) {
+        if (typeof expected !== "number") {
+            throw new Error("Value is not a number");
         }
+        return expected;
     };
-    var assertBoolean = function (opts, field) {
-        var value = opts[field];
-        var expectedType = "boolean";
-        var type = typeof value;
-        if (type !== expectedType) {
-            throw new Error("Value of " + field + " must be boolean, got " + expectedType + ", got " + type);
+    var getBoolean = function (expected) {
+        if (typeof expected !== "boolean") {
+            throw new Error("Value is not a boolean");
         }
+        return expected;
     };
-    var assertGt = function (expected, opts, field) {
-        var value = opts[field];
+    var getPositiveOrZero = function (expected) {
+        var value = getNumber(expected);
         if (value < expected) {
-            throw new Error("Value of " + field + " must be greater than " + expected + ", got " + value);
+            throw new Error("Value must be greater than ".concat(expected, ", got ").concat(value));
         }
+        return value;
     };
     var isPow2 = function (x) { return x & (x - 1); };
-    var methods = {
-        init: function (originalOpts) {
-            var opts = $.extend(true, {}, originalOpts); // Do not mutate inputs
-            if (!opts) {
-                throw Error("Options not set");
+    function assertOptions(opts) {
+        // Assert correct permutation of options
+        if (!opts.save && opts.disableTeamEdit) {
+            $.error('disableTeamEdit can be used only if the bracket is editable, i.e. "save" callback given');
+        }
+        if (!opts.disableToolbar && opts.disableTeamEdit) {
+            $.error('disableTeamEdit requires also resizing to be disabled, initialize with "disableToolbar: true"');
+        }
+    }
+    function parseOptions(input, context, extension) {
+        var opts = {
+            autoSizeTeamWidth: !input.hasOwnProperty("autoSizeTeamWidth")
+                ? false
+                : getBoolean(input.autoSizeTeamWidth),
+            centerConnectors: !input.hasOwnProperty("centerConnectors")
+                ? false
+                : getBoolean(input.centerConnectors),
+            decorator: input.decorator,
+            dir: parseDir(input.dir),
+            disableHighlight: !input.hasOwnProperty("disableHighlight")
+                ? false
+                : getBoolean(input.disableHighlight),
+            disableScoring: !input.hasOwnProperty("disableScoring")
+                ? false
+                : getBoolean(input.disableScoring),
+            disableTeamEdit: !input.hasOwnProperty("disableTeamEdit")
+                ? false
+                : getBoolean(input.disableTeamEdit),
+            disableToolbar: input.disableToolbar,
+            el: context,
+            // TODO: expose via public interface
+            extension: extension,
+            init: parseInit(input.init),
+            matchMargin: !input.hasOwnProperty("matchMargin")
+                ? 20
+                : getPositiveOrZero(input.matchMargin),
+            onMatchClick: input.onMatchClick
+                ? input.onMatchClick
+                : function () {
+                    return;
+                },
+            onMatchHover: input.onMatchHover
+                ? input.onMatchHover
+                : function () {
+                    return;
+                },
+            roundMargin: !input.hasOwnProperty("roundMargin")
+                ? 40
+                : getPositiveOrZero(input.roundMargin),
+            save: input.save,
+            scoreWidth: !input.hasOwnProperty("scoreWidth")
+                ? 30
+                : getPositiveOrZero(input.scoreWidth),
+            skipConsolationRound: input.skipConsolationRound || false,
+            skipGrandFinalComeback: input.skipGrandFinalComeback || false,
+            skipSecondaryFinal: input.skipSecondaryFinal || false,
+            teamWidth: !input.hasOwnProperty("teamWidth")
+                ? 70
+                : getPositiveOrZero(input.teamWidth),
+            userData: input.userData
+        };
+        assertOptions(opts);
+        return opts;
+    }
+    function parseDir(input) {
+        if (input === undefined) {
+            return "lr";
+        }
+        else {
+            if (input !== "lr" && input !== "rl") {
+                throw new Error('Direction must be either: "lr" or "rl"');
             }
-            if (!opts.init && !opts.save) {
-                throw Error("No bracket data or save callback given");
-            }
-            if (opts.userData === undefined) {
-                opts.userData = null;
-            }
-            if (opts.decorator && (!opts.decorator.edit || !opts.decorator.render)) {
-                throw Error("Invalid decorator input");
-            }
-            else if (!opts.decorator) {
-                opts.decorator = { edit: defaultEdit, render: defaultRender };
-            }
-            if (!opts.init) {
-                opts.init = {
-                    results: [],
-                    teams: [[Option.empty(), Option.empty()]]
-                };
-            }
-            opts.el = this;
-            if (opts.save && (opts.onMatchClick || opts.onMatchHover)) {
-                $.error("Match callbacks may not be passed in edit mode (in conjunction with save callback)");
-            }
-            var disableToolbarType = typeof opts.disableToolbar;
-            var disableToolbarGiven = opts.hasOwnProperty("disableToolbar");
-            if (disableToolbarGiven && disableToolbarType !== "boolean") {
-                $.error("disableToolbar must be a boolean, got " + disableToolbarType);
-            }
-            if (!opts.save && disableToolbarGiven) {
-                $.error('disableToolbar can be used only if the bracket is editable, i.e. "save" callback given');
-            }
-            if (!disableToolbarGiven) {
-                opts.disableToolbar = opts.save === undefined;
-            }
-            var disableTeamEditType = typeof opts.disableTeamEdit;
-            var disableTeamEditGiven = opts.hasOwnProperty("disableTeamEdit");
-            if (disableTeamEditGiven && disableTeamEditType !== "boolean") {
-                $.error("disableTeamEdit must be a boolean, got " + disableTeamEditType);
-            }
-            if (!opts.save && disableTeamEditGiven) {
-                $.error('disableTeamEdit can be used only if the bracket is editable, i.e. "save" callback given');
-            }
-            if (!disableTeamEditGiven) {
-                opts.disableTeamEdit = false;
-            }
-            if (!opts.disableToolbar && opts.disableTeamEdit) {
-                $.error('disableTeamEdit requires also resizing to be disabled, initialize with "disableToolbar: true"');
-            }
-            /* wrap data to into necessary arrays */
-            var r = wrap(opts.init.results, 4 - depth(opts.init.results));
-            opts.init.results = wrapResults(r);
-            assertNumber(opts, "teamWidth");
-            assertNumber(opts, "scoreWidth");
-            assertNumber(opts, "roundMargin");
-            assertNumber(opts, "matchMargin");
-            if (!opts.hasOwnProperty("teamWidth")) {
-                opts.teamWidth = 70;
-            }
-            if (!opts.hasOwnProperty("scoreWidth")) {
-                opts.scoreWidth = 30;
-            }
-            if (!opts.hasOwnProperty("roundMargin")) {
-                opts.roundMargin = 40;
-            }
-            if (!opts.hasOwnProperty("matchMargin")) {
-                opts.matchMargin = 20;
-            }
-            assertGt(0, opts, "teamWidth");
-            assertGt(0, opts, "scoreWidth");
-            assertGt(0, opts, "roundMargin");
-            assertGt(0, opts, "matchMargin");
-            if (!opts.hasOwnProperty("centerConnectors")) {
-                opts.centerConnectors = false;
-            }
-            assertBoolean(opts, "centerConnectors");
-            if (!opts.hasOwnProperty("disableHighlight")) {
-                opts.disableHighlight = false;
-            }
-            assertBoolean(opts, "disableHighlight");
-            var log2Result = isPow2(opts.init.teams.length);
-            if (log2Result !== Math.floor(log2Result)) {
-                $.error("\"teams\" property must have 2^n number of team pairs, i.e. 1, 2, 4, etc. Got " + opts.init.teams.length + " team pairs.");
-            }
-            opts.dir = opts.dir || "lr";
-            opts.init.teams =
-                !opts.init.teams || opts.init.teams.length === 0
-                    ? [[null, null]]
-                    : opts.init.teams;
-            opts.init.teams = opts.init.teams.map(function (ts) {
-                return ts.map(function (t) { return (t === null ? Option.empty() : Option.of(t)); });
-            });
-            opts.skipConsolationRound = opts.skipConsolationRound || false;
-            opts.skipSecondaryFinal = opts.skipSecondaryFinal || false;
-            if (opts.dir !== "lr" && opts.dir !== "rl") {
-                $.error('Direction must be either: "lr" or "rl"');
-            }
-            var bracket = JqueryBracket(opts);
-            $(this).data("bracket", { target: this, obj: bracket });
-            return bracket;
-        },
-        data: function () {
+            return input;
+        }
+    }
+    function defaultEvaluateScore(val, previousVal) {
+        if ((!val || !isNumber(val)) && !isNumber(previousVal)) {
+            return 0;
+        }
+        else if (isNumber(val)) {
+            return parseInt(val, 10);
+        }
+        return null;
+    }
+    function parseInit(rawInit) {
+        var value = rawInit
+            ? rawInit
+            : {
+                results: [],
+                teams: [[null, null]]
+            };
+        if (value.teams === undefined) {
+            throw new Error("Teams missing");
+        }
+        if (value.results === undefined) {
+            throw new Error("Results missing");
+        }
+        var log2Result = isPow2(value.teams.length);
+        if (log2Result !== Math.floor(log2Result)) {
+            $.error("\"teams\" property must have 2^n number of team pairs, i.e. 1, 2, 4, etc. Got ".concat(value.teams.length, " team pairs."));
+        }
+        /* wrap data to into necessary arrays */
+        var r = wrap(value.results, 4 - depth(value.results));
+        var results = wrapResults(r);
+        return {
+            results: results,
+            teams: !value.teams || value.teams.length === 0
+                ? [[Option.empty(), Option.empty()]]
+                : value.teams.map(function (ts) {
+                    return ts.map(function (t) { return (t === null ? Option.empty() : Option.of(t)); });
+                })
+        };
+    }
+    function init(ctx, originalOpts, extension) {
+        if (!originalOpts) {
+            throw Error("Options not set");
+        }
+        if (!originalOpts.init && !originalOpts.save) {
+            throw Error("No bracket data or save callback given");
+        }
+        var opts = $.extend(true, {}, originalOpts); // Do not mutate inputs
+        if (opts.decorator && (!opts.decorator.edit || !opts.decorator.render)) {
+            throw Error("Invalid decorator input");
+        }
+        if (opts.save && (opts.onMatchClick || opts.onMatchHover)) {
+            $.error("Match callbacks may not be passed in edit mode (in conjunction with save callback)");
+        }
+        var disableToolbarType = typeof opts.disableToolbar;
+        var disableToolbarGiven = opts.hasOwnProperty("disableToolbar");
+        if (disableToolbarGiven && disableToolbarType !== "boolean") {
+            $.error("disableToolbar must be a boolean, got ".concat(disableToolbarType));
+        }
+        if (!opts.save && disableToolbarGiven) {
+            $.error('disableToolbar can be used only if the bracket is editable, i.e. "save" callback given');
+        }
+        if (!disableToolbarGiven) {
+            opts.disableToolbar = opts.save === undefined;
+        }
+        var internalOpts = parseOptions(originalOpts, ctx, extension);
+        var bracket = JqueryBracket(internalOpts);
+        $(ctx).data("bracket", { target: ctx, obj: bracket });
+        return bracket;
+    }
+    function isInit(arg) {
+        return typeof arg === "object" || arg === undefined;
+    }
+    $.fn.bracket = function (method) {
+        if (typeof method === "string" && method === "data") {
             var bracket = $(this).data("bracket");
             return bracket.obj.data();
         }
-    };
-    $.fn.bracket = function (method) {
-        if (methods[method]) {
-            return methods[method].apply(this, Array.prototype.slice.call(arguments, 1));
-        }
-        else if (typeof method === "object" || !method) {
-            return methods.init.apply(this, arguments);
+        else if (isInit(method)) {
+            var options = method;
+            return init(this, __assign(__assign({}, options), {
+                decorator: options.decorator
+                    ? options.decorator
+                    : { edit: defaultEdit, render: defaultRender }
+            }), {
+                evaluateScore: defaultEvaluateScore,
+                scoreToString: function (score) {
+                    return score === null ? "--" : score.toString();
+                }
+            });
         }
         else {
             $.error("Method " + method + " does not exist on jQuery.bracket");
         }
     };
 })(jQuery);
-//# sourceMappingURL=jquery.bracket.js.map
