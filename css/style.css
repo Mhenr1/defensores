@@ -99,10 +99,20 @@ body.editActive #follow{
     display: block;
 }
 #lock {
-color:rgba(255,0,0,.5)
+color:rgba(255,0,0,.5);
+position:relative;
 
 }
+#lock::after{
+    content: 'Bloqueado para alterações';
+    position: absolute;
+    display: none;
+    bottom: 20px;
 
+}
+#lock::after:hover{
+    display: block;
+}
 #lock.unlock {
     color:rgba(0,255,0,.5)
     
