@@ -267,7 +267,7 @@ function initObserve(userData, data) {
     final.results[0][1] = []
 
     initTournament()
-
+    $('#final .label').first().trigger("save")
 
 
 }
