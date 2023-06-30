@@ -35,6 +35,8 @@ var modelByakuya = {
 var modelFinal = {
     teams: [["a", "b"], ["c", "d"]],
     results: [
+        [[1, 0], [1, 0]]
+       
     ]
 }
 var TeamIchigo = JSON.parse(localStorage.getItem("TeamIchigo")) || modelIchigo
