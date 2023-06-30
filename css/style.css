@@ -1,10 +1,22 @@
+@font-face {
+    font-family: Komika;
+    src: url("../font/komtittl.ttf");
+}
+
+@font-face {
+    font-family: Heave Rust;
+    src: url("../font/HEAVYRUST.ttf");
+}
+
+
 body {
     min-height: 100vh;
     margin: 0;
     background: url('../arena.png');
     background-attachment: fixed;
     background-size: cover;
-
+    user-select: none;
+    font-family: "Komika";
 }
 
 .tournament {
@@ -38,29 +50,40 @@ div.jQBracket.rl .bracket>:last-child {
 }
 
 .team {
-    transition: transform 1s;
+    transition: transform 2s;
     backface-visibility: hidden;
-
-
+    transform-style: preserve-3d
 }
 
 
-#content.animate_content .bracket .round .team {
+#content.animate_content div.jQBracket .team {
 
     transform: rotateX(180deg);
 
 }
 
-.round .team::before {
-    transform: rotateX(-180deg);
+div.jQBracket .team::after {
+    transform: rotateX(180deg);
     content: "";
     position: absolute;
     width: inherit;
     height: inherit;
-    background: inherit;
+    backface-visibility: hidden;
+    background-image: url("../img/Ichigo.png");
+    background-size: 44px;
+    background-repeat: no-repeat;
+    background-position: center -22px;
 
+}
 
+div.jQBracket.rl .team::after {
+    background-image: url("../img/Byakuya.png");
 
+}
+
+div.jQBracket .team:first-child::after {
+
+    background-position: center 0;
 
 }
 
@@ -68,6 +91,7 @@ div.jQBracket.rl .bracket>:last-child {
     background-color: rgba(255, 255, 255, .3);
     position: absolute;
     bottom: 0;
+    padding: 2px;
 }
 
 .tools:hover {
@@ -98,7 +122,14 @@ body.editActive #follow {
 
 .tools div {
     position: relative;
+    display: inline-block;
+    max-width: 0;
+    white-space: nowrap;
+    transition: max-width 1s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+}
 
+.tools.unlock div {
+    max-width: 500px;
 }
 
 #lock {
@@ -120,6 +151,8 @@ body.editActive #follow {
 
 }
 
+
+
 .unlock #lock,
 .unlock span:after {
     color: rgba(0, 255, 0, .5)
@@ -137,7 +170,7 @@ body.editActive #follow {
 
 }
 
-#lock.unlock:after {
+.unlock #lock:after {
 
     content: 'Desbloqueado para alterações';
 }
@@ -150,26 +183,31 @@ body.editActive #follow {
     display: block;
 }
 
-div.jQBracket .team.highlightWinner {
+div.jQBracket .team.highlightWinner,
+div.jQBracket :not(.bubble)::after {
     background-color: #ff9000;
 
 }
-#final .bracket> :first-child{
+
+#final .bracket> :first-child {
     display: none;
 }
 
 div.jQBracket.rl .team.highlightWinner,
-#final .team[data-teamid="2"].highlightWinner {
+div.jQBracket.rl ::after,
+#final div.jQBracket .team[data-teamid="2"].highlightWinner {
     background-color: #ff9eb0;
 
 }
 
 div.jQBracket .connector.highlightWinner,
+
 div.jQBracket .connector div.connector.highlightWinner {
     border-color: #ff9000;
 }
 
 div.jQBracket.rl .connector.highlightWinner,
+div.jQBracket.rl ::after,
 div.jQBracket.rl .connector div.connector.highlightWinner {
     border-color: #ff9eb0;
 }
