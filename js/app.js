@@ -33,12 +33,8 @@ var modelByakuya = {
 
 }
 var modelFinal = {
-    teams: [["", ""], ["", ""]],
+    teams: [["a", "b"], ["c", "d"]],
     results: [
-        [
-
-        ],
-        ,
     ]
 }
 var TeamIchigo = JSON.parse(localStorage.getItem("TeamIchigo")) || modelIchigo
@@ -48,23 +44,9 @@ var final = JSON.parse(localStorage.getItem("final")) || modelFinal
 function save(data, userData) {
     window[userData] = data
     localStorage.setItem(userData, JSON.stringify(data));
-    if (userData != "final") {
-        let k = "TeamByakuya" == userData ? 1 : 0;
-        let result = observe(data)
-        if (result !== false) {
-            final.teams[k] = result
-            console.log(final.results[0][k], k)
-            final.results[0][k] = [1, 0]
-            console.log(final.results[0][k])
 
-        } else {
-            final.teams[k] = ["",""]
-            final.results[0][k] = [0, 0]
-
-        }
-
-        initTournament()
-    }
+    if (userData != "final")
+        initObserve(userData, data);
 
 }
 
@@ -94,7 +76,7 @@ function render(container, data, score, state) {
             return;
     }
 }
-var disableTeamEdit = localStorage.getItem("disableTeamEdit") || false
+var disableTeamEdit = localStorage.getItem("disableTeamEdit") || true
 disableTeamEdit = eval(disableTeamEdit)
 
 var initTournament = function () {
@@ -191,7 +173,7 @@ function transition() {
         lockname()
         $('#tournamentA .label').first().trigger("save")
         $('#tournamentB .label').first().trigger("save")
-
+        $('#final .label').first().trigger("save")
     }, 501);
 
 
@@ -253,7 +235,7 @@ function observe(team) {
 
         e--
 
-    } 
+    }
     k = team.results[0][e][j].findIndex(i => i == 1)
     k1 = teamAux[e][j1].findIndex(i => i == 1)
 
@@ -266,3 +248,24 @@ function observe(team) {
 }
 
 
+function initObserve(userData, data) {
+
+    let z = "TeamByakuya" == userData ? 1 : 0;
+    let result = observe(data)
+    if (result !== false) {
+        final.teams[z] = result
+        final.results[0][0][z] = [1, 0]
+
+    } else {
+
+        final.results[0][0][z] = []
+        final.results[0][1] = []
+
+    }
+    final.results[0][1] = []
+
+    initTournament()
+
+
+
+}
