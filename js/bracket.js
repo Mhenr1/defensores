@@ -339,17 +339,17 @@ var EntryState;
     function winnerBubbles(match) {
         var el = match.el;
         var winner = el.find(".team.win");
-        winner.append('<div class="bubble">1st</div>');
+        winner.append('<div class="bubble">1º</div>');
         var loser = el.find(".team.lose");
-        loser.append('<div class="bubble">2nd</div>');
+        loser.append('<div class="bubble">2º</div>');
         return true;
     }
     function consolationBubbles(match) {
         var el = match.el;
         var winner = el.find(".team.win");
-        winner.append('<div class="bubble third">3rd</div>');
+        winner.append('<div class="bubble third">3º</div>');
         var loser = el.find(".team.lose");
-        loser.append('<div class="bubble fourth">4th</div>');
+        loser.append('<div class="bubble fourth">4º</div>');
         return true;
     }
     var endOfBranch = function () {

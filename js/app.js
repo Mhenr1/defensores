@@ -99,13 +99,13 @@ var initTournament = function () {
 
     }
     $('#tournamentA').bracket({
-        init: TeamIchigo /* data to initialize the bracket with */,
+        init: TeamIchigo ,
         ...conf,
         userData: "TeamIchigo"
     })
 
     $('#tournamentB').bracket({
-        init: TeamByakuya, // data to initialize the bracket with
+        init: TeamByakuya, 
         dir: 'rl',
         ...conf,
         userData: "TeamByakuya"
@@ -168,7 +168,7 @@ function transition() {
     setTimeout(() => {
         $('#content').removeClass('animate_content')
         shuffleActive = false
-    }, 1000)
+    }, 1500)
 
     setTimeout(function () {
 
@@ -252,20 +252,20 @@ function observe(team) {
 
 function initObserve(userData, data) {
 
-    let z = "TeamByakuya" == userData ? 1 : 0;
+    let k = "TeamByakuya" == userData ? 1 : 0;
     let result = observe(data)
     if (result !== false) {
-        final.teams[z] = result
-        final.results[0][0][z] = [1, 0]
+        final.teams[k] = result
+        final.results[0][0][k] = [1, 0]
 
     } else {
 
-        final.results[0][0][z] = []
+        final.results[0][0][k] = []
         final.results[0][1] = []
 
     }
-    final.results[0][1] = []
 
+    final.results[0][1] = []
     initTournament()
     $('#final .label').first().trigger("save")
 

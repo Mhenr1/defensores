@@ -29,7 +29,11 @@
 </head>
 
 <body>
-
+    <div class="header">
+        <p class="name" data-text="Defensores das Almas">Defensores das Almas</p>
+        <p class="event" data-text="Torneio de arena">Torneio de arena</p>
+        <p class="date" data-text="Julho 2023">Julho 2023</p>
+    </div>
 
     <div id="content">
         <div class="tournament">
@@ -40,14 +44,14 @@
 
 
             </div>
-            <div id="tournamentB"></div>
+            <div id="tournamentB" style="direction: rtl;"></div>
 
         </div>
     </div>
     <div class="tools">
         <span class="material-icons-outlined" onclick="lock(this)" id="lock">lock</span>
         <div>
-           
+
             <span id="shuffle" class="material-icons-outlined" onclick="shuffle()" id="shuffle" data-popup="Sortear">
                 shuffle
             </span>
@@ -65,7 +69,7 @@
         edit
     </span>
 </body>
-<script src="./js/app.js"></script>
+<script src="./js/app.js?v=2"></script>
 
 <script>
     initTournament()

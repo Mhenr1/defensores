@@ -1,13 +1,25 @@
 @font-face {
+    font-family: Komtits;
+    src: url("../font/komtits_.ttf");
+}
+
+@font-face {
     font-family: Komika;
-    src: url("../font/komtittl.ttf");
+    src: url("../font/komtit__.ttf");
 }
 
 @font-face {
     font-family: Heave Rust;
     src: url("../font/HEAVYRUST.ttf");
 }
-
+:root{
+--sakura : #ff849c ;
+--ichigo: #ff9000;
+/*#ff6986 #ff4166*/
+}
+* {
+    margin: 0;
+}
 
 body {
     min-height: 100vh;
@@ -25,7 +37,8 @@ body {
     width: 100%;
     display: grid;
     padding: 10px;
-    grid-template-columns: auto 1fr auto;
+    grid-template-columns: 40% 20% 40%;
+    grid-auto-flow: column;
     /* justify-items: center; */
     /* align-items: center; */
     justify-content: center;
@@ -125,7 +138,7 @@ body.editActive #follow {
     display: inline-block;
     max-width: 0;
     white-space: nowrap;
-    transition: max-width 1s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+    transition: max-width 1s ease-in;
 }
 
 .tools.unlock div {
@@ -185,7 +198,7 @@ body.editActive #follow {
 
 div.jQBracket .team.highlightWinner,
 div.jQBracket :not(.bubble)::after {
-    background-color: #ff9000;
+    background-color:var(--ichigo);
 
 }
 
@@ -196,18 +209,92 @@ div.jQBracket :not(.bubble)::after {
 div.jQBracket.rl .team.highlightWinner,
 div.jQBracket.rl ::after,
 #final div.jQBracket .team[data-teamid="2"].highlightWinner {
-    background-color: #ff9eb0;
+    background-color: var(--sakura);
 
 }
 
-div.jQBracket .connector.highlightWinner,
+#final {
+    margin-top: 100px;
+}
 
+div.jQBracket .connector.highlightWinner,
 div.jQBracket .connector div.connector.highlightWinner {
-    border-color: #ff9000;
+    border-color: var(--ichigo);
 }
 
 div.jQBracket.rl .connector.highlightWinner,
 div.jQBracket.rl ::after,
 div.jQBracket.rl .connector div.connector.highlightWinner {
-    border-color: #ff9eb0;
+    border-color:var(--sakura);
+}
+div.jQBracket .team div.label{
+    text-align: center;
+    font-family: "Komika";
+    padding: 0;
+    font-size: 1.3em;
+    line-height: 1.3em;
+}
+.match:has(.team.highlight) {
+
+    z-index: 3;
+}
+
+.match:has(.highlightWinner) {
+    z-index: 2;
+}
+
+.header {
+    position: fixed;
+    width: 100vw;
+    top: 20px;
+    display: flex;
+    align-content: center;
+    flex-flow: column wrap;
+    color: white
+}
+
+.header p {
+    margin: -10px;
+    text-align: center;
+    position: relative;
+
+}
+
+
+.header .name {
+
+    font-size: 1.7em;
+}
+
+.header .event {
+
+    font-size: 3.0em;
+
+    background-image:linear-gradient(gold 45%, red 75%);
+    color: gold;
+    background-clip: text;
+    text-fill-color: transparent;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+
+
+
+}
+
+.header .date {
+    font-size: 2em;
+}
+
+
+.header p::after {
+    content: attr(data-text);
+    position: absolute;
+    left: 0;
+    z-index: 1;
+    width: 100%;
+    font-family: "Komtits";
+    color: red;
+    -webkit-text-stroke: black 2px;
+    -webkit-text-fill-color:orangered
+
 }
