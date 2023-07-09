@@ -8,6 +8,7 @@
     <script src="https://code.jquery.com/jquery-3.7.0.min.js"
         integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g=" crossorigin="anonymous"></script>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
+    <link rel="icon" type="image/x-icon" href="/img/favicon.ico">
 
     <script src="./js/bracket.js?v=2"></script>
     <script>
@@ -29,6 +30,9 @@
 </head>
 
 <body>
+    <div class="all">
+
+    </div>
     <div class="header">
         <p class="name" data-text="Defensores das Almas">Defensores das Almas</p>
         <p class="event" data-text="Torneio de arena">Torneio de arena</p>
@@ -39,28 +43,61 @@
         <div class="tournament">
 
             <div id="tournament"></div>
-           
+
 
         </div>
     </div>
     <div class="tools">
-        <span class="material-icons-outlined" onclick="lock(this)" id="lock">lock</span>
+        <span class="material-icons-outlined" id="lock">lock</span>
         <div>
-            <span class="material-icons-outlined" onclick="editName()" data-popup="Editar nomes">
+            <span class="material-icons-outlined edit" data-popup="Editar nomes">
                 edit
             </span>
-            <span id="shuffle" class="material-icons-outlined" onclick="shuffle()" id="shuffle" data-popup="Sortear">
+            <span class="material-icons-outlined shuffle" data-popup="Sortear">
                 shuffle
             </span>
 
 
-            <span class="material-icons-outlined" onclick="reset()" data-popup="Resetar">
+            <span class="material-icons-outlined reset" data-popup="Resetar">
                 restart_alt
             </span>
 
         </div>
     </div>
-  
+
+    <div id="pop-up">
+        <div class="container shuffle">
+            <picture>
+                <img src="./img/Byakuya_char.png" alt="Byakuya">
+            </picture>
+            <div class="message">
+
+                <p>Deseja sortear?</p>
+                <p>Sortear a formação de partidas vai apagar os resultados atuais.</p>
+                <p> Tem certeza que deseja sortear novas partidas? </p>
+                <form>
+                    <button class="button confirm" type="button">Sim! Sortear!</button>
+                    <button class="button cancel" type="button">Pensando bem... Deixa eu pensar melhor antes</button>
+                </form>
+            </div>
+        </div>
+        <div class="container reset">
+            <picture>
+                <img src="./img/Ichigo_char.png" alt="Ichigo">
+            </picture>
+            <div class="message">
+
+                <p>Deseja Resetar?</p>
+                <p>Isso vai apagar todas as partidas e resultados atuais.</p>
+                <p>Tem certeza que deseja resetar? </p>
+                <form>
+                    <button class="button confirm" type="button">Sim! Bora!</button>
+                    <button class="button cancel" type="button">Pensando bem... Deixa eu pensar melhor antes</button>
+                </form>
+            </div>
+        </div>
+
+    </div>
 </body>
 <script src="./js/app.js?v=2"></script>
 

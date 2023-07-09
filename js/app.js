@@ -82,7 +82,7 @@ var initTournament = function () {
         }
 
     }
-    $('#tournament').bracket({
+    $('.tournament').bracket({
         init: TeamIchigo,
         ...conf,
         userData: "TeamIchigo"
@@ -95,29 +95,29 @@ function shuffle() {
         return;
     }
 
-    var confirmed = confirm("Tem certeza que deseja gerar as partidas e apagar os resultados atuais?")
-    if (confirmed) {
-        shuffleActive = true;
-        disableTeamEdit = true
-        let array = [];
-        TeamIchigo.teams.forEach(e => {
-            array.push(...e)
 
-        });
 
-        TeamIchigo.teams = []
+    shuffleActive = true;
+    disableTeamEdit = true
+    let array = [];
+    TeamIchigo.teams.forEach(e => {
+        array.push(...e)
 
-        array.sort(function (a, b) { return 0.5 - Math.random() });
+    });
 
-        do {
-            TeamIchigo.teams.push([array.shift(), array.shift()])
+    TeamIchigo.teams = []
 
-        } while (array.length);
+    array.sort(function (a, b) { return 0.5 - Math.random() });
 
-        TeamIchigo.results = []
+    do {
+        TeamIchigo.teams.push([array.shift(), array.shift()])
 
-        transition()
-    }
+    } while (array.length);
+
+    TeamIchigo.results = []
+    closePopUp()
+    transition()
+
 }
 
 
@@ -130,7 +130,7 @@ function transition() {
         shuffleActive = false
         setTimeout(() => {
 
-            $('#tournament .label').first().trigger("save")
+            $('.tournament .label').first().trigger("save")
 
 
         }, 500);
@@ -141,16 +141,16 @@ function transition() {
 
 function lockname() {
     disableTeamEdit = true
-    $('body').removeClass('editActive')
-    $('.header').removeClass('gray')
+    $('.all').removeClass('editActive')
+
     initTournament()
 
 }
 function setName() {
     if (locked) return;
     disableTeamEdit = false
-    $('body').addClass('editActive')
-    $('.header').addClass('gray')
+    $('.all').addClass('editActive')
+
     initTournament()
 
 }
@@ -158,31 +158,59 @@ function editName() {
     disableTeamEdit ? setName() : lockname();
 
 }
-function reset() {
+function resetMatches() {
+
     if (shuffleActive || locked) return;
 
-    if (confirm("Tem certeza que quer resetar?")
-    ) {
-        shuffleActive = true
-        TeamIchigo = modelIchigo
-        transition()
-    }
+
+    shuffleActive = true
+    TeamIchigo = modelIchigo
+    closePopUp()
+    transition()
+
 
 
 }
-function lock(e) {
+function lock() {
+
     let newText = 'lock_open'
 
     locked = !locked
     if (locked) {
         newText = 'lock'
-        $(e).parent().removeClass('unlock')
+        $(this).parent().removeClass('unlock')
 
         lockname()
     } else {
-        $(e).parent().addClass('unlock')
+        $(this).parent().addClass('unlock')
 
     }
-    $(e).text(newText)
+    $(this).text(newText)
 }
 initTournament()
+var closePopUp = function () {
+    $('#pop-up').css({ display: "none" })
+    $("#pop-up .container").css({ display: "none" })
+    $('body').removeClass("offScroll")
+
+}
+var popUp = function (fn) {
+
+    $('#pop-up').css({ display: "flex" })
+    $(`.container.${fn}`).css({ display: "block" })
+    $('body').addClass("offScroll")
+}
+
+$("#lock").on("click", lock)
+$("span.shuffle").on("click", () => {
+    popUp("shuffle")
+})
+$("span.reset").on("click", () => {
+    popUp("reset")
+})
+$("span.edit").on("click", editName)
+
+$("#pop-up .cancel").on("click", closePopUp)
+$("#pop-up .shuffle .confirm").on("click", shuffle)
+$("#pop-up .reset .confirm").on("click", resetMatches)
+

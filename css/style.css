@@ -15,49 +15,74 @@
 
 :root {
     --sakura: #ff849c;
+    --sakura-triad: #95ff84;
+    --sakura-triad-2: #8495ff;
     --ichigo: #ff9000;
+    --ichigo-triad: #00ff90;
+    --ichigo-triad-2: #9000ff;
     /*#ff6986 #ff4166*/
 }
 
 * {
     margin: 0;
+    padding: 0;
+
 }
 
 body {
-    min-height: 100vh;
     background: url('../arena.png');
     background-attachment: fixed;
     background-size: cover;
     user-select: none;
+    position: absolute;
     font-family: "Komika";
+    min-width: 100vw;
+    min-height: 100%;
+    width: -moz-fit-content;
+    width: fit-content;
+
 }
 
-body.editActive {
-    -webkit-filter: grayscale(100%);
-    -moz-filter: grayscale(100%);
-    filter: grayscale(100%)
+body.offScroll {
+    overflow: hidden;
+}
+
+.all {
+    position: fixed;
+    top: 0;
+    height: 100vh;
+    width: 100vw;
+
+
+
+}
+
+.editActive {
+    border: 2px red solid;
+    outline: 2px red dashed;
+    outline-offset: -6px;
+    box-sizing: border-box;
 }
 
 .tournament {
-    box-sizing: border-box;
-    height: 100vh;
-    width: 100%;
-    display: grid;
+    min-width: 100%;
+    display: flex;
     padding: 10px;
-    /*
-    grid-template-columns: 40% 20% 40%;
-    grid-auto-flow: column;
-    justify-items: center; */
-    /* align-items: center; */
+    align-items: center;
     justify-content: center;
-    align-content: center;
+    box-sizing: border-box;
+
 }
 
 div.jQBracket {
     width: fit-content !important;
     display: inline-block;
-    width: 100%;
+    white-space: nowrap;
 
+}
+
+div.jQBracket .bracket {
+    width: max-content;
 }
 
 div.jQBracket.rl .round:nth-child(1) {
@@ -176,22 +201,26 @@ div.jQBracket .bubble {
     box-shadow: black -1px 0 10px -2px;
     right: -26px;
 }
-div.jQBracket .team:first-child .bubble{
-        border-bottom: 1px solid #999; 
+
+div.jQBracket .team:first-child .bubble {
+    border-bottom: 1px solid #999;
 }
+
 .jQBracket {
     z-index: 0;
 }
+
 .jQBracket.lr {
     z-index: 1;
 }
 
 .tools {
     background-color: rgba(255, 255, 255, .3);
-    position: absolute;
+    position: fixed;
     bottom: 0;
     padding: 2px;
-    overflow:hidden;
+    overflow: hidden;
+    z-index: 2;
 }
 
 .tools:hover {
@@ -261,9 +290,10 @@ div.jQBracket .team:first-child .bubble{
     color: rgba(0, 0, 0, 0.6);
     cursor: pointer;
 }
+
 .header {
-    position: fixed;
-    width: 100vw;
+    position: absolute;
+    width: 100%;
     top: 20px;
     display: flex;
     align-content: center;
@@ -312,4 +342,116 @@ div.jQBracket .team:first-child .bubble{
     color: red;
     -webkit-text-stroke: black 2px;
     -webkit-text-fill-color: orangered
+}
+
+
+div#pop-up {
+    z-index: 9999;
+    bottom: 0;
+    position: fixed;
+    background-color: rgba(0, 0, 0, .75);
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    display: none;
+
+}
+
+div#pop-up .container {
+    text-align: center;
+    word-wrap: break-word;
+    display: none;
+}
+
+div#pop-up .container picture {
+    position: relative;
+    display: block;
+    height: 33vh;
+}
+
+div#pop-up .container picture::after {
+    content: "";
+    width: 100%;
+    display: inline-block;
+    background-color: var(--ichigo);
+    height: 35%;
+    bottom: 0;
+    left: 0;
+    position: absolute;
+    z-index: -1;
+}
+
+div#pop-up .container.shuffle picture::after {
+    background-color: var(--sakura);
+}
+
+div#pop-up .container picture img {
+    height: 100%;
+    filter: drop-shadow(0px 15px 15px black);
+
+}
+
+div#pop-up .container .message {
+    min-height: 33vh;
+    background-color: var(--ichigo);
+    padding: 20px;
+
+}
+
+div#pop-up .container.shuffle .message {
+    background-color: var(--sakura);
+}
+
+div#pop-up .container .message p:nth-child(1) {
+    font-size: 25px;
+
+}
+
+div#pop-up .container .message button {
+    display: inline-block;
+    width: 100%;
+    margin: 10px;
+    height: 50px;
+    border-radius: 30px;
+    overflow: hidden;
+    background-color: var(--ichigo-triad);
+    border-color: var(--ichigo-triad-2);
+    font-weight: bold;
+    text-align: center;
+    text-decoration: none;
+    font-size: 16px;
+    cursor: pointer;
+    position: relative;
+
+
+}
+
+div#pop-up .container.shuffle .message button {
+    background-color: var(--sakura-triad);
+    border-color: var(--sakura-triad-2);
+}
+
+div#pop-up .container .message button:active {
+    top: -1px;
+    box-shadow: -1px 1px 5px 0;
+
+}
+
+div#pop-up .container .message button.cancel {
+    background-color: white;
+    border-color: #F45D4C;
+    color: #F45D4C;
+}
+
+div#pop-up .container .message button::after {
+    content: "";
+    background-color: rgba(0, 0, 0, .2);
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 5px;
+
+
 }
