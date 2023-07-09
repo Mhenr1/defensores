@@ -1,5 +1,7 @@
 var shuffleActive = false;
 var locked = true;
+var disableTeamEdit = true
+disableTeamEdit = eval(disableTeamEdit)
 var modelIchigo = {
     teams: [
         ["Ichigo 1", "Ichigo 2"],
@@ -10,13 +12,6 @@ var modelIchigo = {
         ["Ichigo 11", "Ichigo 12"],
         ["Ichigo 13", "Ichigo 14"],
         ["Ichigo 15", "Ichigo 16"],
-
-    ],
-    id: "TeamIchigo",
-    results: []
-}
-var modelByakuya = {
-    teams: [
         ["Byakuya 1", "Byakuya 2"],
         ["Byakuya 3", "Byakuya 4"],
         ["Byakuya 5", "Byakuya 6"],
@@ -27,28 +22,18 @@ var modelByakuya = {
         ["Byakuya 15", "Byakuya 16"],
 
     ],
-    id: "TeamByakuya",
+    id: "TeamIchigo",
     results: []
-
-
-}
-var modelFinal = {
-    teams: [["a", "b"], ["c", "d"]],
-    results: [
-        [[0, 0], [0, 0]]
-
-    ]
 }
 var TeamIchigo = JSON.parse(localStorage.getItem("TeamIchigo")) || modelIchigo
-var TeamByakuya = JSON.parse(localStorage.getItem("TeamByakuya")) || modelByakuya
-var final = JSON.parse(localStorage.getItem("final")) || modelFinal
+
 
 function save(data, userData) {
     window[userData] = data
     localStorage.setItem(userData, JSON.stringify(data));
 
-    if (userData != "final")
-        initObserve(userData, data);
+    if (userData != "final") return
+    initObserve(userData, data);
 
 }
 
@@ -62,7 +47,7 @@ function edit(container, data, doneCb) {
 }
 
 
-function render(container, data, score, state) {
+function render(container, data, _score, state) {
     switch (state) {
         case "empty-bye":
             container.append("Jogador")
@@ -78,87 +63,61 @@ function render(container, data, score, state) {
             return;
     }
 }
-var disableTeamEdit = localStorage.getItem("disableTeamEdit") || true
-disableTeamEdit = eval(disableTeamEdit)
 
 var initTournament = function () {
     var conf = {
-        skipConsolationRound: true,
+        skipConsolationRound: false,
         disableToolbar: true,
         teamWidth: 100,
         save,
+        isSingleElimination: false,
         disableScoring: true,
         disableTeamEdit,
         centerConnectors: true,
-        roundMargin: 20,
-
+        roundMargin: 30,
+        twoBrackets: true,
         decorator: {
             edit,
             render
         }
 
     }
-    $('#tournamentA').bracket({
-        init: TeamIchigo ,
+    $('#tournament').bracket({
+        init: TeamIchigo,
         ...conf,
         userData: "TeamIchigo"
     })
 
-    $('#tournamentB').bracket({
-        init: TeamByakuya, 
-        dir: 'rl',
-        ...conf,
-        userData: "TeamByakuya"
 
-    })
-    $('#final').bracket({
-        init: final,
-        ...conf,
-        skipConsolationRound: false,
-        userData: "final"
-
-    })
 }
 function shuffle() {
     if (shuffleActive || locked) {
         return;
     }
-    shuffleActive = true;
-    disableTeamEdit = true
 
+    var confirmed = confirm("Tem certeza que deseja gerar as partidas e apagar os resultados atuais?")
+    if (confirmed) {
+        shuffleActive = true;
+        disableTeamEdit = true
+        let array = [];
+        TeamIchigo.teams.forEach(e => {
+            array.push(...e)
 
-    localStorage.setItem("disableTeamEdit", true)
-    let array = [];
-    TeamIchigo.teams.forEach(e => {
-        array.push(...e)
+        });
 
-    });
-    TeamByakuya.teams.forEach(e => {
-        array.push(...e)
+        TeamIchigo.teams = []
 
-    });
+        array.sort(function (a, b) { return 0.5 - Math.random() });
 
+        do {
+            TeamIchigo.teams.push([array.shift(), array.shift()])
 
-    TeamIchigo.teams = TeamByakuya.teams = []
+        } while (array.length);
 
-    var aux = []
-    array.sort(function (a, b) { return 0.5 - Math.random() });
+        TeamIchigo.results = []
 
-    do {
-        aux.push([array.shift(), array.shift()])
-
-
-    } while (array.length);
-    TeamIchigo.teams = aux.slice(0, 8)
-    TeamByakuya.teams = aux.slice(8)
-    TeamIchigo.results = []
-    TeamByakuya.results = []
-
-
-    transition()
-
-
-
+        transition()
+    }
 }
 
 
@@ -166,40 +125,48 @@ function transition() {
 
     $('#content').addClass('animate_content');
     setTimeout(() => {
+        lockname()
         $('#content').removeClass('animate_content')
         shuffleActive = false
-    }, 1500)
+        setTimeout(() => {
 
-    setTimeout(function () {
+            $('#tournament .label').first().trigger("save")
 
-        lockname()
-        $('#tournamentA .label').first().trigger("save")
-        $('#tournamentB .label').first().trigger("save")
-        $('#final .label').first().trigger("save")
-    }, 501);
 
+        }, 500);
+
+    }, 1600)
 
 }
 
 function lockname() {
     disableTeamEdit = true
     $('body').removeClass('editActive')
+    $('.header').removeClass('gray')
     initTournament()
 
 }
 function setName() {
     if (locked) return;
-    disableTeamEdit = !disableTeamEdit
-    $('body').toggleClass('editActive')
+    disableTeamEdit = false
+    $('body').addClass('editActive')
+    $('.header').addClass('gray')
     initTournament()
+
+}
+function editName() {
+    disableTeamEdit ? setName() : lockname();
 
 }
 function reset() {
     if (shuffleActive || locked) return;
-    TeamByakuya = modelByakuya
-    TeamIchigo = modelIchigo
-    final = modelFinal
-    transition()
+
+    if (confirm("Tem certeza que quer resetar?")
+    ) {
+        shuffleActive = true
+        TeamIchigo = modelIchigo
+        transition()
+    }
 
 
 }
@@ -210,64 +177,12 @@ function lock(e) {
     if (locked) {
         newText = 'lock'
         $(e).parent().removeClass('unlock')
+
         lockname()
     } else {
         $(e).parent().addClass('unlock')
+
     }
     $(e).text(newText)
 }
-$(document).mousemove(function (event) {
-
-
-    $("#follow").offset({ top: event.pageY + 5, left: event.pageX + 5 })
-
-});
-function observe(team) {
-    var e = 3
-    var j = 0
-    var j1 = 0
-    var teamAux = JSON.parse(JSON.stringify(team.results[0]));
-    teamAux[e][j1].reverse()
-    while (e > 0) {
-        var k = team.results[0][e][j].findIndex(i => i == 1)
-        var k1 = teamAux[e][j1].findIndex(i => i == 1)
-        if (k == -1) return false;
-        j1 = (2 * j1) + k1
-        j = (2 * j) + k
-
-        e--
-
-    }
-    k = team.results[0][e][j].findIndex(i => i == 1)
-    k1 = teamAux[e][j1].findIndex(i => i == 1)
-
-    var semiFinal = [
-        team.teams[j][k],
-        team.teams[j1][k1]
-    ];
-
-    return semiFinal
-}
-
-
-function initObserve(userData, data) {
-
-    let k = "TeamByakuya" == userData ? 1 : 0;
-    let result = observe(data)
-    if (result !== false) {
-        final.teams[k] = result
-        final.results[0][0][k] = [1, 0]
-
-    } else {
-
-        final.results[0][0][k] = []
-        final.results[0][1] = []
-
-    }
-
-    final.results[0][1] = []
-    initTournament()
-    $('#final .label').first().trigger("save")
-
-
-}
+initTournament()

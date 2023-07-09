@@ -337,19 +337,32 @@ var EntryState;
         }
     }
     function winnerBubbles(match) {
+
         var el = match.el;
-        var winner = el.find(".team.win");
-        winner.append('<div class="bubble">1º</div>');
-        var loser = el.find(".team.lose");
-        loser.append('<div class="bubble">2º</div>');
+        setTimeout(() => {
+            var winner = el.find(".team.win");
+
+            winner.append('<div class="bubble">1º</div>');
+            var loser = el.find(".team.lose");
+            loser.append('<div class="bubble">2º</div>');
+
+        }, 100)
+
+
         return true;
     }
     function consolationBubbles(match) {
         var el = match.el;
-        var winner = el.find(".team.win");
-        winner.append('<div class="bubble third">3º</div>');
-        var loser = el.find(".team.lose");
-        loser.append('<div class="bubble fourth">4º</div>');
+        setTimeout(() => {
+
+            var winner = el.find(".team.win");
+            winner.append('<div class="bubble third">3º</div>');
+            var loser = el.find(".team.lose");
+            loser.append('<div class="bubble fourth">4º</div>');
+         
+
+        }, 100)
+
         return true;
     }
     var endOfBranch = function () {
@@ -592,6 +605,7 @@ var EntryState;
                 else if (finals.size() > 2) {
                     throw new Error("Unexpected number of final rounds");
                 }
+
                 return winnerBubbles(match);
             }
         }));
@@ -780,15 +794,18 @@ var EntryState;
             return this.previousRound;
         };
         Round.prototype.size = function () {
-            return this.matches.length;
+            let divisor = this.opts.twoBrackets ? 2 : 1;
+            let length = this.matches.length / divisor
+            return length;
         };
         Round.prototype.render = function () {
+            this.bracket.eq(0)
             this.roundCon.empty();
             if (!this.doRenderCb.isEmpty() && !this.doRenderCb.get()()) {
                 return;
             }
             this.roundCon.appendTo(this.bracket.el);
-            this.matches.forEach(function (m) { return m.render(); });
+            this.matches.forEach(function (m, _i) { return m.render(); });
         };
         Round.prototype.results = function () {
             return this.matches.reduce(function (agg, m) {
@@ -799,7 +816,9 @@ var EntryState;
     }());
     var Bracket = /** @class */ (function () {
         function Bracket(bracketCon, initResults, mkMatch, isFirstBracket, opts) {
-            this.bracketCon = bracketCon;
+
+            this.brackets = bracketCon
+            this.bracketCon = this.brackets.eq(0);
             this.initResults = initResults;
             this.mkMatch = mkMatch;
             this.isFirstBracket = isFirstBracket;
@@ -813,6 +832,9 @@ var EntryState;
             enumerable: false,
             configurable: true
         });
+        Bracket.prototype.eq = function (n) {
+            this.bracketCon = this.brackets.eq(n);
+        }
         Bracket.prototype.addRound = function (doRenderCb) {
             var id = this.rounds.length;
             var previous = id > 0
@@ -1014,7 +1036,10 @@ var EntryState;
                 });
             }
             else if (opts.disableScoring) {
-                tEl.on('save', () => renderAll(true))
+                tEl.on('save', () => {
+                  
+                    renderAll(true)
+                })
                 tEl.click(function () {
 
                     if (opts.extension.scoreToString(score.toNull()) === "--" ||
@@ -1144,6 +1169,16 @@ var EntryState;
             var align = this.opts.dir === "lr" ? "right" : "left";
             var connectorOffset = this.teamCon.height() / 4;
             var matchupOffset = this.matchCon.height() / 2;
+
+            if (this.seed >= this.round.matches.length / 2 && this.opts.twoBrackets) {
+                align = "left"
+
+            }
+            let roundCount = this.round.bracket.rounds.length
+            if (this.round.roundNumber == roundCount - 2 && this.opts.twoBrackets) {
+                matchupOffset = 0 ///Testar
+            }
+
             var result = cb
                 .map(function (connectorCb) { return connectorCb(_this.teamCon, _this); })
                 .orElseGet(function () {
@@ -1205,6 +1240,7 @@ var EntryState;
         };
         Match.prototype.render = function () {
             var _this = this;
+
             this.matchCon.empty();
             this.teamCon.empty();
             // This shouldn't be done at render-time
@@ -1226,17 +1262,32 @@ var EntryState;
             var isReady = !this.match.a.name.isEmpty() && !this.match.b.name.isEmpty();
             this.teamCon.append(createTeam(this.round.roundNumber, this.match, this.match.a, this.match.b, isReady, this.isFirstBracket, this.opts, this.resultId, this.topCon, this.renderAll));
             this.teamCon.append(createTeam(this.round.roundNumber, this.match, this.match.b, this.match.a, isReady, this.isFirstBracket, this.opts, this.resultId, this.topCon, this.renderAll));
+
+            var isLast = this.renderCb.map(function (cb) { return cb(_this); }).orElse(false);
+
+            if (this.seed == this.round.matches.length / 2 && !isLast
+                && this.opts.twoBrackets && this.isFirstBracket) {
+
+                this.round.bracket.eq(1)
+                this.round.roundCon = this.round.roundCon.clone().empty()
+                this.round.roundCon.appendTo(this.round.bracket.el);
+            }
+
+
             this.matchCon.appendTo(this.round.el);
             this.matchCon.append(this.teamCon);
+
             var height = this.round.bracket.el.height() / this.round.size();
-            this.el.css({ height: height });
+            if (isLast && this.opts.twoBrackets) height /= 2
+
+            this.el.css({ height });
             var top = this.el.height() / 2 - this.teamCon.height() / 2;
             this.teamCon.css({ top: top });
             /* todo: move to class */
             if (this.alignCb !== null) {
                 this.alignCb(this.teamCon);
             }
-            var isLast = this.renderCb.map(function (cb) { return cb(_this); }).orElse(false);
+
             if (!isLast) {
                 this.connect(this.connectorCb);
             }
@@ -1296,22 +1347,38 @@ var EntryState;
         var isSingleElimination = data.results.length <= 1;
         // 45 === team height x2 + 1px margin
         var height = data.teams.length * 45 + data.teams.length * opts.matchMargin;
-        var topCon = $('<div class="jQBracket ' + opts.dir + '"></div>').appendTo(opts.el.empty());
+        var topCon = $('<div class="jQBracket ' + opts.dir + '"></div>')
+
+        if (opts.twoBrackets) {
+            topCon = topCon.add($('<div class="jQBracket rl"></div>'));
+            height /= 2
+
+
+        }
+
+
+        topCon.appendTo(opts.el.empty());
         function resizeContainer() {
+
             var roundCount = countRounds(data.teams.length, isSingleElimination, opts.skipGrandFinalComeback, opts.skipSecondaryFinal, data.results);
-            topCon.css({
-                // reserve space for consolation round
-                height: isSingleElimination &&
-                    data.teams.length <= 2 &&
-                    !opts.skipConsolationRound
-                    ? height + 40
-                    : "",
-                width: opts.disableToolbar
-                    ? roundCount * (opts.teamWidth + opts.scoreWidth + opts.roundMargin) +
-                    10
-                    : roundCount * (opts.teamWidth + opts.scoreWidth + opts.roundMargin) +
-                    40
-            });
+
+            topCon.each((_index, elm) => {
+                var width = "fit-content"
+
+                if (_index == 0 && !opts.disableToolbar)
+
+                    $(elm).css({
+                        // reserve space for consolation round
+                        height: isSingleElimination &&
+                            data.teams.length <= 2 &&
+                            !opts.skipConsolationRound
+                            ? height + 40
+                            : "",
+                        width
+
+                    });
+            })
+
         }
         var w;
         var l;
@@ -1347,7 +1414,7 @@ var EntryState;
             $.error("skipSecondaryFinal setting is viable only in double elimination mode");
         }
         if (!opts.disableToolbar) {
-            topCon.append(createToolbar(data, opts));
+            topCon.first().append(createToolbar(data, opts));
         }
         var fEl;
         var wEl;
@@ -1490,7 +1557,7 @@ var EntryState;
                 ? false
                 : getBoolean(input.centerConnectors),
             decorator: input.decorator,
-            dir: parseDir(input.dir),
+            dir: input.twoBrackets === true ? "lr" : parseDir(input.dir),
             disableHighlight: !input.hasOwnProperty("disableHighlight")
                 ? false
                 : getBoolean(input.disableHighlight),
@@ -1531,7 +1598,8 @@ var EntryState;
             teamWidth: !input.hasOwnProperty("teamWidth")
                 ? 70
                 : getPositiveOrZero(input.teamWidth),
-            userData: input.userData
+            userData: input.userData,
+            twoBrackets: input.twoBrackets || false
         };
         assertOptions(opts);
         return opts;

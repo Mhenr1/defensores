@@ -9,7 +9,7 @@
         integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g=" crossorigin="anonymous"></script>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
 
-    <script src="./js/bracket.js"></script>
+    <script src="./js/bracket.js?v=2"></script>
     <script>
 
         (function () {
@@ -38,43 +38,30 @@
     <div id="content">
         <div class="tournament">
 
-            <div id="tournamentA"></div>
-            <div id="final">
-
-
-
-            </div>
-            <div id="tournamentB" style="direction: rtl;"></div>
+            <div id="tournament"></div>
+           
 
         </div>
     </div>
     <div class="tools">
         <span class="material-icons-outlined" onclick="lock(this)" id="lock">lock</span>
         <div>
-
+            <span class="material-icons-outlined" onclick="editName()" data-popup="Editar nomes">
+                edit
+            </span>
             <span id="shuffle" class="material-icons-outlined" onclick="shuffle()" id="shuffle" data-popup="Sortear">
                 shuffle
             </span>
 
-            <span class="material-icons-outlined" onclick="setName()" data-popup="Editar nomes">
-                edit
-            </span>
+
             <span class="material-icons-outlined" onclick="reset()" data-popup="Resetar">
                 restart_alt
             </span>
 
         </div>
     </div>
-    <span class="material-icons-outlined" id="follow">
-        edit
-    </span>
+  
 </body>
 <script src="./js/app.js?v=2"></script>
-
-<script>
-    initTournament()
-
-
-</script>
 
 </html>
