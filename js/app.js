@@ -25,15 +25,15 @@ var modelIchigo = {
     id: "TeamIchigo",
     results: []
 }
-var TeamIchigo = JSON.parse(localStorage.getItem("TeamIchigo")) || modelIchigo
+var TeamIchigo = JSON.parse(localStorage.getItem("TeamIchigo")) ?? modelIchigo
+var date = localStorage.getItem("date") ?? $("p.date").text()
 
+$("p.date").text(date)
+$("p.date").attr("data-text", date)
 
 function save(data, userData) {
     window[userData] = data
     localStorage.setItem(userData, JSON.stringify(data));
-
-    if (userData != "final") return
-    initObserve(userData, data);
 
 }
 
@@ -125,12 +125,12 @@ function transition() {
 
     $('#content').addClass('animate_content');
     setTimeout(() => {
-        lockname()
+        lockandInit()
         $('#content').removeClass('animate_content')
         shuffleActive = false
         setTimeout(() => {
 
-            $('.tournament .label').first().trigger("save")
+            $('.tournament').trigger("save")
 
 
         }, 500);
@@ -138,10 +138,18 @@ function transition() {
     }, 1600)
 
 }
+$('p.date').on("input", () => {
+    date = $("p.date").text()
+    $("p.date").attr("data-text", date)
+    localStorage.setItem("date", date);
 
-function lockname() {
+
+})
+function lockandInit() {
     disableTeamEdit = true
     $('.all').removeClass('editActive')
+    $('p.date').attr('contenteditable', 'false')
+
 
     initTournament()
 
@@ -150,12 +158,13 @@ function setName() {
     if (locked) return;
     disableTeamEdit = false
     $('.all').addClass('editActive')
-
+    $('p.date').attr('contenteditable', 'true');
+    $('p.date').focus()
     initTournament()
 
 }
 function editName() {
-    disableTeamEdit ? setName() : lockname();
+    disableTeamEdit ? setName() : lockandInit();
 
 }
 function resetMatches() {
@@ -171,7 +180,7 @@ function resetMatches() {
 
 
 }
-function lock() {
+var lock = function () {
 
     let newText = 'lock_open'
 
@@ -179,15 +188,14 @@ function lock() {
     if (locked) {
         newText = 'lock'
         $(this).parent().removeClass('unlock')
-
-        lockname()
+        lockandInit()
     } else {
         $(this).parent().addClass('unlock')
 
     }
     $(this).text(newText)
 }
-initTournament()
+$(document).ready(initTournament)
 var closePopUp = function () {
     $('#pop-up').css({ display: "none" })
     $("#pop-up .container").css({ display: "none" })
