@@ -1418,7 +1418,6 @@ var EntryState;
 
                 }
                 
-               
                     document.documentElement.scrollLeft = left
               
             }
