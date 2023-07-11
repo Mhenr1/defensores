@@ -359,7 +359,7 @@ var EntryState;
             winner.append('<div class="bubble third">3º</div>');
             var loser = el.find(".team.lose");
             loser.append('<div class="bubble fourth">4º</div>');
-         
+
 
         }, 100)
 
@@ -981,6 +981,7 @@ var EntryState;
         return ResultId;
     }());
     function createTeam(roundNumber, match, team, opponent, isReady, isFirstBracket, opts, resultId, topCon, renderAll) {
+
         var resultIdAttribute = team.name.isEmpty() || opponent.name.isEmpty()
             ? ""
             : "data-resultid=\"result-".concat(resultId.getNext(), "\"");
@@ -1036,11 +1037,9 @@ var EntryState;
                 });
             }
             else if (opts.disableScoring) {
-                tEl.on('save', () => {
-                  
-                    renderAll(true)
-                })
+
                 tEl.click(function () {
+
 
                     if (opts.extension.scoreToString(score.toNull()) === "--" ||
                         opts.extension.scoreToString(score.toNull()) === "0") {
@@ -1358,6 +1357,14 @@ var EntryState;
 
 
         topCon.appendTo(opts.el.empty());
+        if (typeof opts.save === "function") {
+            opts.el.off("save")
+            opts.el.on("save", () => {
+
+                opts.save(exportData(data), opts.userData);
+            })
+
+        }
         function resizeContainer() {
 
             var roundCount = countRounds(data.teams.length, isSingleElimination, opts.skipGrandFinalComeback, opts.skipSecondaryFinal, data.results);
@@ -1384,6 +1391,7 @@ var EntryState;
         var l;
         var f;
         function renderAll(save) {
+            let left = window.scrollX || document.documentElement.scrollLeft;
             resultId.reset();
             w.render();
             if (l) {
@@ -1407,7 +1415,12 @@ var EntryState;
                 resizeContainer();
                 if (opts.save) {
                     opts.save(exportData(data), opts.userData);
+
                 }
+                
+               
+                    document.documentElement.scrollLeft = left
+              
             }
         }
         if (opts.skipSecondaryFinal && isSingleElimination) {
