@@ -124,18 +124,18 @@ function shuffle() {
 function transition() {
 
     $('#content').addClass('animate_content');
-    setTimeout(() => {
+    $('.animate_content .team').first().one("transitionend webkitTransitionEnd oTransitionEnd", () => {
         lockandInit()
-        $('#content').removeClass('animate_content')
+       
+        $('#content').addClass('animate_content_flip')
+        $('.tournament').trigger("save")
         shuffleActive = false
-        setTimeout(() => {
+        $('.animate_content_flip .team').first().one("transitionend webkitTransitionEnd oTransitionEnd", () => {
+            $('#content').removeClass('animate_content_flip')
+            $('#content').removeClass('animate_content')
+        })
+    })
 
-            $('.tournament').trigger("save")
-
-
-        }, 500);
-
-    }, 1600)
 
 }
 $('p.date').on("input", () => {
@@ -147,7 +147,7 @@ $('p.date').on("input", () => {
 })
 function lockandInit() {
     disableTeamEdit = true
-    $('.all').removeClass('editActive')
+    $('.overlayer').removeClass('editActive')
     $('p.date').attr('contenteditable', 'false')
 
 
@@ -157,7 +157,7 @@ function lockandInit() {
 function setName() {
     if (locked) return;
     disableTeamEdit = false
-    $('.all').addClass('editActive')
+    $('.overlayer').addClass('editActive')
     $('p.date').attr('contenteditable', 'true');
     $('p.date').focus()
     initTournament()

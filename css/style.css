@@ -49,24 +49,20 @@ body.offScroll {
     overflow: hidden;
 }
 
-.all {
+.overlayer {
     position: fixed;
     top: 0;
-    height: 100vh;
-    width: 100vw;
-  
-
-
-
 }
 
-.all.editActive {
+.overlayer.editActive {
     border: 2px red solid;
     outline: 2px red dashed;
     outline-offset: -6px;
     box-sizing: border-box;
     pointer-events: none;
     z-index: 999;
+    height: 100%;
+    width: 100%;
 }
 
 .tournament {
@@ -80,7 +76,7 @@ div.jQBracket {
     width: fit-content !important;
     display: inline-block;
     white-space: nowrap;
- 
+
 
 }
 
@@ -94,7 +90,6 @@ div.jQBracket.rl .round:nth-child(1) {
 
 
 div.jQBracket .team {
-    transition: transform 1500ms;
     backface-visibility: hidden;
     transform-style: preserve-3d
 }
@@ -105,10 +100,15 @@ div.jQBracket .team {
     margin: 0 15px;
 }
 
-#content.animate_content div.jQBracket .team,
-div.jQBracket .animate_content.team {
-
+#content.animate_content div.jQBracket .team {
     transform: rotateX(180deg);
+    transition: transform 1500ms linear;
+
+}
+
+#content.animate_content_flip div.jQBracket .team {
+    transform: rotateX(360deg);
+
 
 }
 
