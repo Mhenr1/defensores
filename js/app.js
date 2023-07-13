@@ -229,7 +229,7 @@ var kon = function (n) {
         return;
     }
 
-    $(".kon").find("img").attr('src', `../img/kon/anime_kon_${n}.png`)
+    $(".kon").find("img").attr('src', `./img/kon/anime_kon_${n}.png`)
     $(".kon").show()
     let final = shuffleActive ? 2 : 9;
     n >= final ? n = 1 : n++;

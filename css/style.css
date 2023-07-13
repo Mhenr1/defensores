@@ -20,6 +20,8 @@
     --ichigo: #ff9000;
     --ichigo-triad: #00ff90;
     --ichigo-triad-2: #9000ff;
+    --gradient: linear-gradient(gold 45%, red 75%);
+    ;
     /*#ff6986 #ff4166*/
 }
 
@@ -129,8 +131,9 @@ div.jQBracket .team::after {
 
 
 div.jQBracket:not(.rl) .round:last-of-type .team::after {
-
     background-image: url("../img/Arena.png");
+    
+
 }
 
 div.jQBracket.rl .team::after {
@@ -353,7 +356,7 @@ div.kon {
 
     font-size: 3.0em;
 
-    background-image: linear-gradient(gold 45%, red 75%);
+    background-image: var(--gradient);
     color: gold;
     background-clip: text;
     -webkit-background-clip: text;
