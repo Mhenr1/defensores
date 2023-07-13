@@ -94,6 +94,7 @@ div.jQBracket .team {
     transform-style: preserve-3d
 }
 
+
 #content {
     justify-self: center;
     align-self: center;
@@ -232,6 +233,8 @@ div.jQBracket .team:first-child .bubble {
     z-index: 1;
 }
 
+
+
 .tools {
     background-color: rgba(255, 255, 255, .3);
     position: fixed;
@@ -298,6 +301,12 @@ div.jQBracket .team:first-child .bubble {
 .tools.unlock #lock:after {
 
     content: 'Desbloqueado para alterações';
+}
+
+div.kon {
+    position: absolute;
+    bottom: 0;
+    right: 0;
 }
 
 .material-icons-outlined {

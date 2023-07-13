@@ -122,11 +122,11 @@ function shuffle() {
 
 
 function transition() {
-
+    kon(1)
     $('#content').addClass('animate_content');
     $('.animate_content .team').first().one("transitionend webkitTransitionEnd oTransitionEnd", () => {
         lockandInit()
-       
+
         $('#content').addClass('animate_content_flip')
         $('.tournament').trigger("save")
         shuffleActive = false
@@ -146,12 +146,15 @@ $('p.date').on("input", () => {
 
 })
 function lockandInit() {
+    let left = window.scrollX || document.documentElement.scrollLeft;
+
     disableTeamEdit = true
     $('.overlayer').removeClass('editActive')
     $('p.date').attr('contenteditable', 'false')
 
 
     initTournament()
+    document.documentElement.scrollLeft = left
 
 }
 function setName() {
@@ -195,7 +198,7 @@ var lock = function () {
     }
     $(this).text(newText)
 }
-$(document).ready(initTournament)
+
 var closePopUp = function () {
     $('#pop-up').css({ display: "none" })
     $("#pop-up .container").css({ display: "none" })
@@ -203,22 +206,36 @@ var closePopUp = function () {
 
 }
 var popUp = function (fn) {
-
     $('#pop-up').css({ display: "flex" })
-    $(`.container.${fn}`).css({ display: "block" })
+    $(`.container.${fn.data.action}`).css({ display: "block" })
     $('body').addClass("offScroll")
 }
 
 $("#lock").on("click", lock)
-$("span.shuffle").on("click", () => {
-    popUp("shuffle")
-})
-$("span.reset").on("click", () => {
-    popUp("reset")
-})
+$("span.shuffle").on("click", { action: "shuffle" }, popUp)
+$("span.reset").on("click", { action: "reset" }, popUp)
 $("span.edit").on("click", editName)
-
 $("#pop-up .cancel").on("click", closePopUp)
 $("#pop-up .shuffle .confirm").on("click", shuffle)
 $("#pop-up .reset .confirm").on("click", resetMatches)
 
+$(document).ready(initTournament)
+var kon = function (n) {
+  
+    if (n == 9) {
+
+        $(".kon").hide(1000)
+
+        return;
+    }
+
+    $(".kon").find("img").attr('src', `../img/kon/anime_kon_${n}.png`)
+    $(".kon").show()
+    let final = shuffleActive ? 2 : 9;
+    n >= final ? n = 1 : n++;
+
+    setTimeout(() => {
+        kon(n)
+    }, 200)
+
+}
