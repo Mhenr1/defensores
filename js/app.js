@@ -221,7 +221,7 @@ $("#pop-up .reset .confirm").on("click", resetMatches)
 
 $(document).ready(initTournament)
 var kon = function (n) {
-  
+
     if (n == 9) {
 
         $(".kon").hide(1000)

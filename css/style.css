@@ -127,6 +127,12 @@ div.jQBracket .team::after {
 
 }
 
+
+div.jQBracket:not(.rl) .round:last-of-type .team::after {
+
+    background-image: url("../img/Arena.png");
+}
+
 div.jQBracket.rl .team::after {
     background-image: url("../img/Byakuya.png");
 
