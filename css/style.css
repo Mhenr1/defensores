@@ -313,6 +313,7 @@ div.kon {
     position: absolute;
     bottom: 0;
     right: 0;
+    display: none;
 }
 
 .material-icons-outlined {
