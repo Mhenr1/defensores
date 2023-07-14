@@ -44,28 +44,30 @@ body {
     width: fit-content;
     display: grid;
     box-sizing: border-box;
+''
+    &.offScroll {
 
-}
-
-body.offScroll {
-    overflow: hidden;
+        overflow: hidden;
+    }
 }
 
 .overlayer {
     position: fixed;
     top: 0;
+
+    &.editActive {
+        border: 2px red solid;
+        outline: 2px red dashed;
+        outline-offset: -6px;
+        box-sizing: border-box;
+        pointer-events: none;
+        z-index: 999;
+        height: 100%;
+        width: 100%;
+    }
+
 }
 
-.overlayer.editActive {
-    border: 2px red solid;
-    outline: 2px red dashed;
-    outline-offset: -6px;
-    box-sizing: border-box;
-    pointer-events: none;
-    z-index: 999;
-    height: 100%;
-    width: 100%;
-}
 
 .tournament {
 
@@ -79,168 +81,184 @@ div.jQBracket {
     display: inline-block;
     white-space: nowrap;
 
+    & .bracket {
+        width: max-content;
+    }
+
+    &.rl .round:nth-child(1) {
+        margin-right: 0 !important;
+    }
+
+    & .team {
+        backface-visibility: hidden;
+        transform-style: preserve-3d;
+
+        &::after {
+            transform: rotateX(180deg);
+            content: "";
+            position: absolute;
+            width: inherit;
+            height: inherit;
+            backface-visibility: hidden;
+            background-image: url("../img/Ichigo.png");
+            background-size: 44px;
+            background-repeat: no-repeat;
+            background-position: center -22px;
+
+        }
+
+        &:first-child::after {
+            background-position: center 0;
+
+        }
+
+        & div.label {
+            text-align: center;
+            font-family: "Komika";
+            padding: 0;
+            font-size: 1.3em;
+            line-height: 1.3em;
+        }
+
+        &:first-child .bubble {
+            border-bottom: 1px solid #999;
+        }
+
+        .rl &::after {
+            background-image: url("../img/Byakuya.png");
+
+        }
+    }
+
+
+
+
+    &:not(.rl) .round:last-of-type .team::after {
+        background-image: url("../img/Arena.png");
+
+
+    }
+
+
+
+
+
+
+
+
+    & .team.highlightWinner,
+    & .match :not(.bubble)::after {
+        background-color: var(--ichigo);
+
+    }
+
+
+
+    &.rl .team.highlightWinner,
+    &.rl .match ::after,
+    & .round:last-of-type .team.highlightWinner:nth-child(2n) {
+        background-color: var(--sakura);
+
+    }
+
+
+    & .connector.highlightWinner,
+    & .connector div.connector.highlightWinner {
+        border-color: var(--ichigo);
+    }
+
+    &.rl .connector.highlightWinner,
+    &.rl ::after,
+    &.rl .connector div.connector.highlightWinner {
+        border-color: var(--sakura);
+    }
+
+
+    & .match:has(.highlightWinner) {
+        z-index: 2;
+    }
+
+    & .match:has(.team.highlight) {
+        z-index: 3;
+    }
+
+    & .bracket .round {
+        &::after {
+            color: yellow;
+            font-family: "Komika";
+            -webkit-text-stroke: red 1px;
+            width: 100%;
+            display: inline-block;
+            text-align: center;
+            position: absolute;
+            bottom: -5px;
+        }
+
+        & .round:nth-child(2)::after {
+            content: "Oitavas";
+            font-size: 1.6em;
+        }
+
+        & .round:nth-child(3)::after {
+            content: "Quartas";
+            font-size: 1.8em;
+        }
+
+        & .round:nth-child(4)::after {
+            content: "Semi";
+            font-size: 2em;
+        }
+
+        & .round:nth-child(5)::after {
+            content: "Final";
+            font-size: 2.2em;
+        }
+    }
+
+
+
+
+    & .bubble {
+        width: 25px;
+        box-shadow: black -1px 0 10px -2px;
+        right: -26px;
+    }
+
+
+
+
+    z-index: 0;
+
+
+    &.lr {
+        z-index: 1;
+    }
 
 }
 
-div.jQBracket .bracket {
-    width: max-content;
-}
-
-div.jQBracket.rl .round:nth-child(1) {
-    margin-right: 0 !important;
-}
 
 
-div.jQBracket .team {
-    backface-visibility: hidden;
-    transform-style: preserve-3d
-}
+
 
 
 #content {
     justify-self: center;
     align-self: center;
     margin: 0 15px;
+
+    &.animate_content div.jQBracket .team {
+        transform: rotateX(180deg);
+        transition: transform 1500ms linear;
+
+    }
+
+    &.animate_content_flip div.jQBracket .team {
+        transform: rotateX(360deg);
+
+
+    }
 }
 
-#content.animate_content div.jQBracket .team {
-    transform: rotateX(180deg);
-    transition: transform 1500ms linear;
-
-}
-
-#content.animate_content_flip div.jQBracket .team {
-    transform: rotateX(360deg);
-
-
-}
-
-div.jQBracket .team::after {
-    transform: rotateX(180deg);
-    content: "";
-    position: absolute;
-    width: inherit;
-    height: inherit;
-    backface-visibility: hidden;
-    background-image: url("../img/Ichigo.png");
-    background-size: 44px;
-    background-repeat: no-repeat;
-    background-position: center -22px;
-
-}
-
-
-div.jQBracket:not(.rl) .round:last-of-type .team::after {
-    background-image: url("../img/Arena.png");
-    
-
-}
-
-div.jQBracket.rl .team::after {
-    background-image: url("../img/Byakuya.png");
-
-}
-
-div.jQBracket .team:first-child::after {
-    background-position: center 0;
-
-}
-
-
-
-
-div.jQBracket .team.highlightWinner,
-div.jQBracket .match :not(.bubble)::after {
-    background-color: var(--ichigo);
-
-}
-
-
-
-div.jQBracket.rl .team.highlightWinner,
-div.jQBracket.rl .match ::after,
-div.jQBracket .round:last-of-type .team.highlightWinner:nth-child(2n) {
-    background-color: var(--sakura);
-
-}
-
-
-div.jQBracket .connector.highlightWinner,
-div.jQBracket .connector div.connector.highlightWinner {
-    border-color: var(--ichigo);
-}
-
-div.jQBracket.rl .connector.highlightWinner,
-div.jQBracket.rl ::after,
-div.jQBracket.rl .connector div.connector.highlightWinner {
-    border-color: var(--sakura);
-}
-
-div.jQBracket .team div.label {
-    text-align: center;
-    font-family: "Komika";
-    padding: 0;
-    font-size: 1.3em;
-    line-height: 1.3em;
-}
-
-div.jQBracket .match:has(.highlightWinner) {
-    z-index: 2;
-}
-
-div.jQBracket .match:has(.team.highlight) {
-    z-index: 3;
-}
-
-div.jQBracket .bracket .round::after {
-    color: yellow;
-    font-family: "Komika";
-    -webkit-text-stroke: red 1px;
-    width: 100%;
-    display: inline-block;
-    text-align: center;
-    position: absolute;
-    bottom: -5px;
-}
-
-div.jQBracket .bracket .round:nth-child(2)::after {
-    content: "Oitavas";
-    font-size: 1.6em;
-}
-
-div.jQBracket .bracket .round:nth-child(3)::after {
-    content: "Quartas";
-    font-size: 1.8em;
-}
-
-div.jQBracket .bracket .round:nth-child(4)::after {
-    content: "Semi";
-    font-size: 2em;
-}
-
-div.jQBracket .bracket .round:nth-child(5)::after {
-    content: "Final";
-    font-size: 2.2em;
-}
-
-
-div.jQBracket .bubble {
-    width: 25px;
-    box-shadow: black -1px 0 10px -2px;
-    right: -26px;
-}
-
-div.jQBracket .team:first-child .bubble {
-    border-bottom: 1px solid #999;
-}
-
-.jQBracket {
-    z-index: 0;
-}
-
-.jQBracket.lr {
-    z-index: 1;
-}
 
 
 
@@ -251,66 +269,70 @@ div.jQBracket .team:first-child .bubble {
     padding: 2px;
     overflow: hidden;
     z-index: 2;
+
+
+
+    &:hover {
+        background-color: rgba(255, 255, 255, .5);
+    }
+
+    & div {
+        position: relative;
+        display: inline-block;
+        max-width: 0;
+        white-space: nowrap;
+        transition: max-width 1s ease-in;
+    }
+
+    &.unlock div {
+        max-width: 500px;
+    }
+
+    & span::after {
+        content: attr(data-popup);
+        font-family: cursive;
+        font-size: 16px;
+        position: absolute;
+        bottom: 35px;
+        left: 0;
+        visibility: hidden;
+        opacity: 0;
+        transition: visibility 0s, opacity 0.5s ease-in;
+        color: rgba(255, 0, 0, .5);
+
+
+    }
+
+
+    & #lock {
+        color: rgba(255, 0, 0, .5);
+    }
+
+    &.unlock #lock,
+    &.unlock span:after {
+        color: rgba(0, 255, 0, .5)
+    }
+
+    & span:hover:after {
+        visibility: visible;
+        opacity: 1;
+        background-color: rgba(0, 0, 0, 0.75);
+        padding: 2px;
+    }
+
+    & #lock::after {
+        content: 'Bloqueado para alterações';
+
+    }
+
+    &.unlock #lock:after {
+
+        content: 'Desbloqueado para alterações';
+    }
 }
 
-.tools:hover {
-    background-color: rgba(255, 255, 255, .5);
-
-}
-
-.tools div {
-    position: relative;
-    display: inline-block;
-    max-width: 0;
-    white-space: nowrap;
-    transition: max-width 1s ease-in;
-}
-
-.tools.unlock div {
-    max-width: 500px;
-}
-
-.tools span::after {
-    content: attr(data-popup);
-    font-family: cursive;
-    font-size: 16px;
-    position: absolute;
-    bottom: 35px;
-    left: 0;
-    visibility: hidden;
-    opacity: 0;
-    transition: visibility 0s, opacity 0.5s ease-in;
-    color: rgba(255, 0, 0, .5);
 
 
-}
-
-
-.tools #lock {
-    color: rgba(255, 0, 0, .5);
-}
-
-.tools.unlock #lock,
-.tools.unlock span:after {
-    color: rgba(0, 255, 0, .5)
-}
-
-.tools span:hover:after {
-    visibility: visible;
-    opacity: 1;
-    background-color: rgba(0, 0, 0, 0.75);
-    padding: 2px;
-}
-
-.tools #lock::after {
-    content: 'Bloqueado para alterações';
-
-}
-
-.tools.unlock #lock:after {
-
-    content: 'Desbloqueado para alterações';
-}
 
 div.kon {
     position: absolute;
@@ -338,51 +360,52 @@ div.kon {
     flex-flow: column wrap;
     color: white;
 
+
+
+    & p {
+        line-height: 1;
+        text-align: center;
+        position: relative;
+
+    }
+
+
+    & .name {
+
+        font-size: 1.7em;
+    }
+
+    & .event {
+
+        font-size: 3.0em;
+
+        background-image: var(--gradient);
+        color: gold;
+        background-clip: text;
+        -webkit-background-clip: text;
+        text-fill-color: transparent;
+        -webkit-text-fill-color: transparent;
+
+    }
+
+    & .date {
+        font-size: 2em;
+    }
+
+
+    & p::after {
+        content: attr(data-text);
+        position: absolute;
+        left: 0;
+        z-index: 1;
+        width: 100%;
+        font-family: "Komtits";
+        color: red;
+        -webkit-text-stroke: black 2px;
+        -webkit-text-fill-color: orangered
+    }
+
 }
-
-.header p {
-    line-height: 1;
-    text-align: center;
-    position: relative;
-
-}
-
-
-.header .name {
-
-    font-size: 1.7em;
-}
-
-.header .event {
-
-    font-size: 3.0em;
-
-    background-image: var(--gradient);
-    color: gold;
-    background-clip: text;
-    -webkit-background-clip: text;
-    text-fill-color: transparent;
-    -webkit-text-fill-color: transparent;
-
-}
-
-.header .date {
-    font-size: 2em;
-}
-
-
-.header p::after {
-    content: attr(data-text);
-    position: absolute;
-    left: 0;
-    z-index: 1;
-    width: 100%;
-    font-family: "Komtits";
-    color: red;
-    -webkit-text-stroke: black 2px;
-    -webkit-text-fill-color: orangered
-}
-
 
 div#pop-up {
     z-index: 9999;
@@ -395,102 +418,103 @@ div#pop-up {
     justify-content: center;
     display: none;
 
-}
 
-div#pop-up .container {
-    text-align: center;
-    word-wrap: break-word;
-    display: none;
-}
-
-div#pop-up .container picture {
-    position: relative;
-    display: block;
-    height: 33vh;
-}
-
-div#pop-up .container picture::after {
-    content: "";
-    width: 100%;
-    display: inline-block;
-    background-color: var(--ichigo);
-    height: 35%;
-    bottom: 0;
-    left: 0;
-    position: absolute;
-    z-index: -1;
-}
-
-div#pop-up .container.shuffle picture::after {
-    background-color: var(--sakura);
-}
-
-div#pop-up .container picture img {
-    height: 100%;
-    filter: drop-shadow(0px 15px 15px black);
-
-}
-
-div#pop-up .container .message {
-    min-height: 33vh;
-    background-color: var(--ichigo);
-    padding: 20px;
-
-}
-
-div#pop-up .container.shuffle .message {
-    background-color: var(--sakura);
-}
-
-div#pop-up .container .message p:nth-child(1) {
-    font-size: 25px;
-
-}
-
-div#pop-up .container .message button {
-    display: inline-block;
-    width: 100%;
-    margin: 10px;
-    height: 50px;
-    border-radius: 30px;
-    overflow: hidden;
-    background-color: var(--ichigo-triad);
-    border-color: var(--ichigo-triad-2);
-    font-weight: bold;
-    text-align: center;
-    text-decoration: none;
-    font-size: 16px;
-    cursor: pointer;
-    position: relative;
+    & .container {
+        text-align: center;
+        word-wrap: break-word;
+        display: none;
 
 
-}
+        & picture {
+            position: relative;
+            display: block;
+            height: 33vh;
+        }
 
-div#pop-up .container.shuffle .message button {
-    background-color: var(--sakura-triad);
-    border-color: var(--sakura-triad-2);
-}
+        & picture::after {
+            content: "";
+            width: 100%;
+            display: inline-block;
+            background-color: var(--ichigo);
+            height: 35%;
+            bottom: 0;
+            left: 0;
+            position: absolute;
+            z-index: -1;
+        }
 
-div#pop-up .container .message button:active {
-    top: -1px;
-    box-shadow: -1px 1px 5px 0;
+        & .shuffle picture::after {
+            background-color: var(--sakura);
+        }
 
-}
+        & picture img {
+            height: 100%;
+            filter: drop-shadow(0px 15px 15px black);
 
-div#pop-up .container .message button.cancel {
-    background-color: white;
-    border-color: #F45D4C;
-    color: #F45D4C;
-}
+        }
 
-div#pop-up .container .message button::after {
-    content: "";
-    background-color: rgba(0, 0, 0, .2);
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    height: 5px;
+        & .message {
+            min-height: 33vh;
+            background-color: var(--ichigo);
+            padding: 20px;
+
+        }
+
+        & .shuffle .message {
+            background-color: var(--sakura);
+        }
+
+        & .message p:nth-child(1) {
+            font-size: 25px;
+
+        }
+
+        & .message button {
+            display: inline-block;
+            width: 100%;
+            margin: 10px;
+            height: 50px;
+            border-radius: 30px;
+            overflow: hidden;
+            background-color: var(--ichigo-triad);
+            border-color: var(--ichigo-triad-2);
+            font-weight: bold;
+            text-align: center;
+            text-decoration: none;
+            font-size: 16px;
+            cursor: pointer;
+            position: relative;
 
 
+        }
+
+        & .shuffle .message button {
+            background-color: var(--sakura-triad);
+            border-color: var(--sakura-triad-2);
+        }
+
+        & .message button:active {
+            top: -1px;
+            box-shadow: -1px 1px 5px 0;
+
+        }
+
+        & .message button.cancel {
+            background-color: white;
+            border-color: #F45D4C;
+            color: #F45D4C;
+        }
+
+        & .message button::after {
+            content: "";
+            background-color: rgba(0, 0, 0, .2);
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+
+
+        }
+    }
 }
