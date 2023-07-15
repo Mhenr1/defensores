@@ -1,109 +1,103 @@
 <!DOCTYPE html>
 <html lang="pt-Br">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="./css/bracket.css" />
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="./css/bracket.css">
-
-
-    <script src="https://code.jquery.com/jquery-3.7.0.min.js"
-        integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g=" crossorigin="anonymous"></script>
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
-    <link rel="icon" type="image/x-icon" href="./img/favicon.ico">
-
+    <script
+      src="https://code.jquery.com/jquery-3.7.0.min.js"
+      integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g="
+      crossorigin="anonymous"
+    ></script>
+    <link
+      href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined"
+      rel="stylesheet"
+    />
+    <link rel="icon" type="image/x-icon" href="./img/favicon.ico" />
 
     <script>
+      (function () {
+        // Replace with the URL of your CSS style sheet
+        const href = "./css/style.css";
 
-        (function () {
-            // Replace with the URL of your CSS style sheet
-            const href = './css/style.css';
-
-            // Leave the rest of the code as-is
-            const link = document.createElement('link');
-            const cacheBuster = Math.round(new Date().getTime() / 1000);
-            link.setAttribute('href', href + '?cb=' + cacheBuster);
-            link.setAttribute('rel', 'stylesheet');
-            document.head.appendChild(link);
-        })();
-
+        // Leave the rest of the code as-is
+        const link = document.createElement("link");
+        const cacheBuster = Math.round(new Date().getTime() / 1000);
+        link.setAttribute("href", href + "?cb=" + cacheBuster);
+        link.setAttribute("rel", "stylesheet");
+        document.head.appendChild(link);
+      })();
     </script>
     <script src="./js/bracket.js?v=2"></script>
     <title>Torneio Defensores</title>
-</head>
+  </head>
 
-<body>
-
-
-
+  <body>
     <div id="content">
-        <div class="header">
-            <p class="name" data-text="Defensores das Almas">Defensores das Almas</p>
-            <p class="event" data-text="Torneio de arena">Torneio de arena</p>
-            <p class="date" data-text="Julho 2023">Julho 2023</p>
-        </div>
-        <div class="tournament">
-
-        </div>
+      <div class="header">
+        <p class="name" data-text="Defensores das Almas">
+          Defensores das Almas
+        </p>
+        <p class="event" data-text="Torneio de arena">Torneio de arena</p>
+        <p class="date" data-before="" data-text="Julho 2023">Julho 2023</p>
+      </div>
+      <div class="tournament"></div>
     </div>
     <div class="tools">
-        <span class="material-icons-outlined" id="lock">lock</span>
-        <div>
-            <span class="material-icons-outlined edit" data-popup="Editar nomes">
-                edit
-            </span>
-            <span class="material-icons-outlined shuffle" data-popup="Sortear">
-                shuffle
-            </span>
+      <span class="material-icons-outlined" id="lock">lock</span>
+      <div>
+        <span class="material-icons-outlined edit" data-popup="Editar nomes">
+          edit
+        </span>
+        <span class="material-icons-outlined shuffle" data-popup="Sortear">
+          shuffle
+        </span>
 
-
-            <span class="material-icons-outlined reset" data-popup="Resetar">
-                restart_alt
-            </span>
-
-        </div>
+        <span class="material-icons-outlined reset" data-popup="Resetar">
+          restart_alt
+        </span>
+      </div>
     </div>
     <div class="kon">
-
-        <img src="./img/kon/anime_kon_1.png" alt="kon">
+      <img src="./img/kon/anime_kon_1.png" alt="kon" />
     </div>
     <div id="pop-up">
-        <div class="container shuffle">
-            <picture>
-                <img src="./img/Byakuya_char.png" alt="Byakuya">
-            </picture>
-            <div class="message">
-
-                <p>Deseja sortear?</p>
-                <p>Sortear a formação de partidas vai apagar os resultados atuais.</p>
-                <p> Tem certeza que deseja sortear novas partidas? </p>
-                <form>
-                    <button class="button confirm" type="button">Sim! Sortear!</button>
-                    <button class="button cancel" type="button">Pensando bem... Deixa eu pensar melhor antes</button>
-                </form>
-            </div>
+      <div class="container shuffle">
+        <picture>
+          <img src="./img/Byakuya_char.png" alt="Byakuya" />
+        </picture>
+        <div class="message">
+          <p>Deseja sortear?</p>
+          <p>Sortear a formação de partidas vai apagar os resultados atuais.</p>
+          <p>Tem certeza que deseja sortear novas partidas?</p>
+          <form>
+            <button class="button confirm" type="button">Sim! Sortear!</button>
+            <button class="button cancel" type="button">
+              Pensando bem... Deixa eu pensar melhor antes
+            </button>
+          </form>
         </div>
-        <div class="container reset">
-            <picture>
-                <img src="./img/Ichigo_char.png" alt="Ichigo">
-            </picture>
-            <div class="message">
-
-                <p>Deseja Resetar?</p>
-                <p>Isso vai apagar todas as partidas e resultados atuais.</p>
-                <p>Tem certeza que deseja resetar? </p>
-                <form>
-                    <button class="button confirm" type="button">Sim! Bora!</button>
-                    <button class="button cancel" type="button">Pensando bem... Deixa eu pensar melhor antes</button>
-                </form>
-            </div>
+      </div>
+      <div class="container reset">
+        <picture>
+          <img src="./img/Ichigo_char.png" alt="Ichigo" />
+        </picture>
+        <div class="message">
+          <p>Deseja Resetar?</p>
+          <p>Isso vai apagar todas as partidas e resultados atuais.</p>
+          <p>Tem certeza que deseja resetar?</p>
+          <form>
+            <button class="button confirm" type="button">Sim! Bora!</button>
+            <button class="button cancel" type="button">
+              Pensando bem... Deixa eu pensar melhor antes
+            </button>
+          </form>
         </div>
-
+      </div>
     </div>
-    <div class="overlayer">
-
-    </div>
-</body>
-<script src="./js/app.js?v=3"></script>
-
+    <div class="overlayer"></div>
+    
+  <script src="./js/app.js?v=3"></script>
+  <script src="./js/html2canvas.js"></script>
 </html>
