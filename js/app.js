@@ -194,18 +194,26 @@ var lock = function () {
 
 var closePopUp = function () {
   $("#pop-up").css({ display: "none" });
-  $("#pop-up .container").css({ display: "none" });
+  $("#pop-up >div").css({ display: "none" });
   $("body").removeClass("offScroll");
 };
 var popUp = function (fn) {
   $("#pop-up").css({ display: "flex" });
-  $(`.container.${fn.data.action}`).css({ display: "block" });
+  $(`.container.${fn}`).css({ display: "block" });
   $("body").addClass("offScroll");
 };
 
 $("#lock").on("click", lock);
-$("span.shuffle").on("click", { action: "shuffle" }, popUp);
-$("span.reset").on("click", { action: "reset" }, popUp);
+$("span.shuffle").on("click", () => {
+  popUp("shuffle");
+});
+$("span.reset").on("click", () => {
+  popUp("reset");
+});
+$("span.save").on("click", () => {
+ 
+  htmlCanvas();
+});
 $("span.edit").on("click", editName);
 $("#pop-up .cancel").on("click", closePopUp);
 $("#pop-up .shuffle .confirm").on("click", shuffle);
@@ -230,15 +238,19 @@ var kon = function (n) {
 };
 var htmlCanvas = function () {
   $(".tools").hide();
-  html2canvas(document.body)
+  html2canvas(document.body, {
+
+  })
     .then(function (canvas) {
       // Cria um elemento de link para fazer o download da imagem
       var link = document.createElement("a");
       link.href = canvas.toDataURL("image/png");
-      link.download = "captura-de-pagina.png";
-      link.click();
+      link.download = "torneioBBS.png";
+      $(".canvas img").attr("src", link);
+      $(".canvas a").attr("href", link);
     })
     .finally(() => {
+      popUp("canvas");
       $(".tools").show();
     });
 };
