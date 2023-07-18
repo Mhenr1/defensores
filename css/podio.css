@@ -1,0 +1,82 @@
+@import "style.css";
+:root {
+  --width: 25vw;
+}
+
+@media (min-width: 766px) {
+  :root {
+    --width: 15vw;
+  }
+}
+#content {
+  justify-self: center;
+  align-self: center;
+  margin: 0 15px;
+  width: 75%;
+}
+#content .podium {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  position: relative;
+}
+#content .podium > div {
+  border: solid 2px silver;
+  border-radius: 5px;
+  width: var(--width);
+  height: calc(1.6 * var(--width));
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-around;
+  backdrop-filter: blur(16px) saturate(180%);
+  -webkit-backdrop-filter: blur(16px) saturate(180%);
+  background-color: rgba(17, 25, 40, 0.75);
+  transition: all 0.5s;
+}
+#content .podium > div div {
+  padding: 5px;
+}
+#content .podium > div img {
+  max-width: 100%;
+}
+#content .podium > div:first-child {
+  transform: scale(1.05);
+  box-shadow: 9px 0px 19px 1px rgba(0, 0, 0, 0.75), -9px 0px 19px 1px rgba(0, 0, 0, 0.75);
+  z-index: 1;
+}
+#content .podium > div:nth-child(2) {
+  order: -1;
+  transform: perspective(100px) rotateY(2deg);
+}
+#content .podium > div:last-child {
+  transform: perspective(100px) rotateY(-2deg);
+}
+#content .podium > div:hover {
+  z-index: 2;
+  transform: scale(1.1);
+}
+#content .podium > div span {
+  font-size: clamp(11px, 22px, 2em);
+  background: #da0;
+  display: inline-block;
+  width: 100%;
+  text-align: center;
+  position: relative;
+}
+#content .podium > div span:after {
+  height: 50%;
+  width: inherit;
+  content: "";
+  display: inline-block;
+  background: rgba(0, 0, 0, 0.5);
+  position: absolute;
+  bottom: 0;
+  left: 0;
+}
+#content .podium > div:nth-child(2) span {
+  background: #ccc;
+}
+#content .podium > div:last-child span {
+  background: #963;
+}

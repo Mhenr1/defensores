@@ -1,0 +1,301 @@
+@charset "UTF-8";
+@import "style.css";
+.overlayer {
+  position: fixed;
+  top: 0;
+  pointer-events: none;
+}
+.overlayer.editActive {
+  border: 2px red solid;
+  outline: 2px red dashed;
+  outline-offset: -6px;
+  box-sizing: border-box;
+  height: 100%;
+  width: 100%;
+}
+
+.tournament {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+div.jQBracket {
+  width: fit-content !important;
+  display: inline-block;
+  white-space: nowrap;
+  pointer-events: none;
+  z-index: 0;
+}
+div.jQBracket .bracket {
+  width: max-content;
+}
+div.jQBracket.rl .round:nth-child(1) {
+  margin-right: 0 !important;
+}
+div.jQBracket .team {
+  backface-visibility: hidden;
+  transform-style: preserve-3d;
+  pointer-events: auto;
+}
+div.jQBracket .team::after {
+  display: none;
+  transform: rotateX(180deg);
+  content: "";
+  position: absolute;
+  width: inherit;
+  height: inherit;
+  backface-visibility: hidden;
+  background-image: url("../img/Ichigo-big.png");
+  background-size: 300%;
+  background-repeat: no-repeat;
+  background-position: center -22px;
+}
+div.jQBracket .team:first-child::after {
+  background-position: center 0;
+}
+div.jQBracket .team div.label {
+  text-align: center;
+  font-family: "Komika";
+  padding: 0;
+  font-size: 1.3em;
+  line-height: 1.3em;
+}
+div.jQBracket .team:first-child .bubble {
+  border-bottom: 1px solid #999;
+}
+.rl div.jQBracket .team::after {
+  background-image: url("../img/Byakuya-big.png");
+}
+div.jQBracket:not(.rl) .round:last-of-type .team::after {
+  background-image: url("../img/Arena.png");
+  background-size: 44px;
+}
+div.jQBracket .team.highlightWinner, div.jQBracket .match :not(.bubble)::after {
+  background-color: var(--ichigo);
+}
+div.jQBracket.rl .team.highlightWinner, div.jQBracket.rl .match ::after, div.jQBracket .round:last-of-type .team.highlightWinner:nth-child(2n) {
+  background-color: var(--sakura);
+}
+div.jQBracket .connector.highlightWinner, div.jQBracket .connector div.connector.highlightWinner {
+  border-color: var(--ichigo);
+}
+div.jQBracket.rl .connector.highlightWinner, div.jQBracket.rl ::after, div.jQBracket.rl .connector div.connector.highlightWinner {
+  border-color: var(--sakura);
+}
+div.jQBracket .match:has(.highlightWinner) {
+  z-index: 2;
+}
+div.jQBracket .match:has(.team.highlight) {
+  z-index: 3;
+}
+div.jQBracket .bracket .round::after {
+  color: yellow;
+  font-family: "Komika";
+  -webkit-text-stroke: red 1px;
+  width: 100%;
+  display: inline-block;
+  text-align: center;
+  position: absolute;
+  bottom: -5px;
+}
+div.jQBracket .bracket .round:nth-child(2)::after {
+  content: "Oitavas";
+  font-size: 1.6em;
+}
+div.jQBracket .bracket .round:nth-child(3)::after {
+  content: "Quartas";
+  font-size: 1.8em;
+}
+div.jQBracket .bracket .round:nth-child(4)::after {
+  content: "Semi";
+  font-size: 2em;
+}
+div.jQBracket .bracket .round:nth-child(5)::after {
+  content: "Final";
+  font-size: 2.2em;
+}
+div.jQBracket .bubble {
+  width: 25px;
+  box-shadow: black -1px 0 10px -2px;
+  right: -26px;
+}
+div.jQBracket.lr {
+  z-index: 1;
+}
+
+#content {
+  justify-self: center;
+  align-self: center;
+  margin: 0 15px;
+}
+#content.animate_content div.jQBracket .team {
+  transform: rotateX(180deg);
+  transition: transform 1500ms linear;
+}
+#content.animate_content_flip div.jQBracket .team {
+  transform: rotateX(360deg);
+}
+#content.animate_content .team::after {
+  display: block;
+}
+
+.tools {
+  background-color: rgba(255, 255, 255, 0.3);
+  position: fixed;
+  bottom: 0;
+  padding: 2px;
+  overflow: hidden;
+  z-index: 2;
+}
+.tools div {
+  position: relative;
+  display: inline-block;
+  max-width: 0;
+  white-space: nowrap;
+  transition: max-width 1s ease-in;
+}
+.tools.unlock div {
+  max-width: 500px;
+}
+.tools span::after {
+  content: attr(data-popup);
+  font-family: cursive;
+  font-size: 16px;
+  position: absolute;
+  bottom: 35px;
+  left: 0;
+  visibility: hidden;
+  opacity: 0;
+  transition: visibility 0s, opacity 0.5s ease-in;
+  color: rgba(255, 0, 0, 0.5);
+}
+.tools #lock {
+  color: rgba(255, 0, 0, 0.5);
+}
+.tools.unlock #lock, .tools.unlock span:after {
+  color: rgba(0, 255, 0, 0.5);
+}
+.tools #lock::after {
+  content: "Bloqueado para alterações";
+}
+.tools.unlock #lock:after {
+  content: "Desbloqueado para alterações";
+}
+
+div.kon {
+  position: fixed;
+  inset: auto 0 0 auto;
+  display: none;
+  height: 100px;
+}
+div.kon img {
+  height: 100%;
+}
+
+#pop-up {
+  z-index: 9999;
+  bottom: 0;
+  position: fixed;
+  background-color: rgba(0, 0, 0, 0.75);
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  display: none;
+}
+#pop-up .container {
+  text-align: center;
+  word-wrap: break-word;
+  display: none;
+}
+#pop-up .container picture {
+  position: relative;
+  display: block;
+  height: 33vh;
+}
+#pop-up .container picture::after {
+  content: "";
+  width: 100%;
+  display: inline-block;
+  background-color: var(--ichigo);
+  height: 35%;
+  bottom: 0;
+  left: 0;
+  position: absolute;
+  z-index: -1;
+}
+#pop-up .container .shuffle picture::after {
+  background-color: var(--sakura);
+}
+#pop-up .container picture img {
+  height: 100%;
+  filter: drop-shadow(0px 15px 15px black);
+}
+#pop-up .container .message {
+  min-height: 33vh;
+  background-color: var(--ichigo);
+  padding: 20px;
+}
+#pop-up .container .shuffle .message {
+  background-color: var(--sakura);
+}
+#pop-up .container .message p:nth-child(1) {
+  font-size: 25px;
+}
+#pop-up .container .button {
+  display: inline-block;
+  width: 100%;
+  margin: 10px;
+  height: 50px;
+  border-radius: 30px;
+  overflow: hidden;
+  background-color: var(--ichigo-triad);
+  border-color: var(--ichigo-triad-2);
+  font-weight: bold;
+  text-align: center;
+  text-decoration: none;
+  font-size: 16px;
+  cursor: pointer;
+  position: relative;
+}
+#pop-up .container .shuffle .button {
+  background-color: var(--sakura-triad);
+  border-color: var(--sakura-triad-2);
+}
+#pop-up .container .button:active {
+  top: -1px;
+  box-shadow: -1px 1px 5px 0;
+}
+#pop-up .container .button:is(.cancel, .save) {
+  background-color: white;
+  border-color: #f45d4c;
+  color: #f45d4c;
+}
+#pop-up .container .button::after {
+  content: "";
+  background-color: rgba(0, 0, 0, 0.2);
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 5px;
+}
+#pop-up .container.canvas {
+  width: 75%;
+  align-self: center;
+}
+#pop-up .container.canvas img {
+  width: 100%;
+  border: solid 2px white;
+}
+#pop-up .container.canvas a {
+  display: inline-block;
+}
+#pop-up .container.canvas .button {
+  margin: 5px;
+  width: 200px;
+}
+#pop-up .container.canvas .button .material-icons-outlined {
+  font-size: inherit;
+}

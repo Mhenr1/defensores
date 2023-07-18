@@ -2,17 +2,20 @@
   font-family: Komtits;
   src: url("../font/komtits_.ttf");
 }
-
 @font-face {
   font-family: Komika;
   src: url("../font/komtit__.ttf");
 }
-
 @font-face {
   font-family: Heave Rust;
   src: url("../font/HEAVYRUST.ttf");
 }
 
+@media print {
+  body {
+    background: red !important;
+  }
+}
 :root {
   --sakura: #ff849c;
   --sakura-triad: #95ff84;
@@ -36,268 +39,15 @@ body {
   user-select: none;
   position: absolute;
   font-family: "Komika";
-  min-width: 100vw;
+  min-width: 100%;
   min-height: 100%;
   width: -moz-fit-content;
   width: fit-content;
   display: grid;
   box-sizing: border-box;
-  &.offScroll {
-    overflow: hidden;
-  }
 }
-
-.overlayer {
-  position: fixed;
-  top: 0;
-  pointer-events: none;
-
-  &.editActive {
-    border: 2px red solid;
-    outline: 2px red dashed;
-    outline-offset: -6px;
-    box-sizing: border-box;
-    height: 100%;
-    width: 100%;
-  }
-}
-
-.tournament {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-div.jQBracket {
-  width: fit-content !important;
-  display: inline-block;
-  white-space: nowrap;
-  pointer-events: none;
-  & .bracket {
-    width: max-content;
-  }
-
-  &.rl .round:nth-child(1) {
-    margin-right: 0 !important;
-  }
-
-  & .team {
-    backface-visibility: hidden;
-    transform-style: preserve-3d;
-    pointer-events: auto;
-
-    &::after {
-      display: none;
-      transform: rotateX(180deg);
-      content: "";
-      position: absolute;
-      width: inherit;
-      height: inherit;
-      backface-visibility: hidden;
-      background-image: url("../img/Ichigo-big.png");
-      background-size: 300%;
-      background-repeat: no-repeat;
-      background-position: center -22px;
-    }
-
-    &:first-child::after {
-      background-position: center 0;
-    }
-
-    & div.label {
-      text-align: center;
-      font-family: "Komika";
-      padding: 0;
-      font-size: 1.3em;
-      line-height: 1.3em;
-    }
-
-    &:first-child .bubble {
-      border-bottom: 1px solid #999;
-    }
-
-    .rl &::after {
-      background-image: url("../img/Byakuya-big.png");
-    }
-  }
-
-  &:not(.rl) .round:last-of-type .team::after {
-    background-image: url("../img/Arena.png");
-    background-size: 44px;
-  }
-
-  & .team.highlightWinner,
-  & .match :not(.bubble)::after {
-    background-color: var(--ichigo);
-  }
-
-  &.rl .team.highlightWinner,
-  &.rl .match ::after,
-  & .round:last-of-type .team.highlightWinner:nth-child(2n) {
-    background-color: var(--sakura);
-  }
-
-  & .connector.highlightWinner,
-  & .connector div.connector.highlightWinner {
-    border-color: var(--ichigo);
-  }
-
-  &.rl .connector.highlightWinner,
-  &.rl ::after,
-  &.rl .connector div.connector.highlightWinner {
-    border-color: var(--sakura);
-  }
-
-  & .match:has(.highlightWinner) {
-    z-index: 2;
-  }
-
-  & .match:has(.team.highlight) {
-    z-index: 3;
-  }
-
-  & .bracket .round {
-    &::after {
-      color: yellow;
-      font-family: "Komika";
-      -webkit-text-stroke: red 1px;
-      width: 100%;
-      display: inline-block;
-      text-align: center;
-      position: absolute;
-      bottom: -5px;
-    }
-
-    &:nth-child(2)::after {
-      content: "Oitavas";
-      font-size: 1.6em;
-    }
-
-    &:nth-child(3)::after {
-      content: "Quartas";
-      font-size: 1.8em;
-    }
-
-    &:nth-child(4)::after {
-      content: "Semi";
-      font-size: 2em;
-    }
-
-    &:nth-child(5)::after {
-      content: "Final";
-      font-size: 2.2em;
-    }
-  }
-
-  & .bubble {
-    width: 25px;
-    box-shadow: black -1px 0 10px -2px;
-    right: -26px;
-  }
-
-  z-index: 0;
-
-  &.lr {
-    z-index: 1;
-  }
-}
-
-#content {
-  justify-self: center;
-  align-self: center;
-  margin: 0 15px;
-
-  &.animate_content div.jQBracket .team {
-    transform: rotateX(180deg);
-    transition: transform 1500ms linear;
-  }
-
-  &.animate_content_flip div.jQBracket .team {
-    transform: rotateX(360deg);
-  }
-  &.animate_content .team::after {
-    display: block;
-  }
-}
-
-.tools {
-  background-color: rgba(255, 255, 255, 0.3);
-  position: fixed;
-  bottom: 0;
-  padding: 2px;
+body.offScroll {
   overflow: hidden;
-  z-index: 2;
-
-  &:hover {
-    background-color: rgba(255, 255, 255, 0.5);
-  }
-
-  & div {
-    position: relative;
-    display: inline-block;
-    max-width: 0;
-    white-space: nowrap;
-    transition: max-width 1s ease-in;
-  }
-
-  &.unlock div {
-    max-width: 500px;
-  }
-
-  & span::after {
-    content: attr(data-popup);
-    font-family: cursive;
-    font-size: 16px;
-    position: absolute;
-    bottom: 35px;
-    left: 0;
-    visibility: hidden;
-    opacity: 0;
-    transition: visibility 0s, opacity 0.5s ease-in;
-    color: rgba(255, 0, 0, 0.5);
-  }
-
-  & #lock {
-    color: rgba(255, 0, 0, 0.5);
-  }
-
-  &.unlock #lock,
-  &.unlock span:after {
-    color: rgba(0, 255, 0, 0.5);
-  }
-
-  & span:hover:after {
-    visibility: visible;
-    opacity: 1;
-    background-color: rgba(0, 0, 0, 0.75);
-    padding: 2px;
-  }
-
-  & #lock::after {
-    content: "Bloqueado para alterações";
-  }
-
-  &.unlock #lock:after {
-    content: "Desbloqueado para alterações";
-  }
-  & .material-icons-outlined {
-    color: rgba(0, 0, 0, 0.3);
-  }
-
-  & .material-icons-outlined:hover {
-    color: rgba(0, 0, 0, 0.6);
-    cursor: pointer;
-  }
-}
-
-div.kon {
-  position: fixed;
-  inset: auto 0 0 auto;
-  display: none;
-  height: 100px;
-  & img {
-    height: 100%;
-  }
 }
 
 .header {
@@ -309,55 +59,76 @@ div.kon {
   align-content: center;
   flex-flow: column wrap;
   color: white;
+}
+.header p {
+  line-height: 1;
+  text-align: center;
+  position: relative;
+}
+.header .name {
+  font-size: 1.7em;
+}
+.header .event {
+  font-size: 3em;
+  background-image: var(--gradient);
+  color: gold;
+  background-clip: text;
+  -webkit-background-clip: text;
+  text-fill-color: transparent;
+  -webkit-text-fill-color: transparent;
+}
+.header .date {
+  font-size: 2em;
+  position: relative;
+}
+.header .date.on::before {
+  content: "edit";
+  position: absolute;
+  right: -25px;
+  font-family: "Material Icons Outlined";
+  cursor: pointer;
+  color: black;
+  font-size: 20px;
+  border: solid black 2px;
+  background: white;
+  border-radius: 50%;
+}
+.header p::after {
+  content: attr(data-text);
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 1;
+  width: 100%;
+  font-family: "Komtits";
+  color: red;
+  -webkit-text-stroke: black 2px;
+  -webkit-text-fill-color: orangered;
+}
 
-  & p {
-    line-height: 1;
-    text-align: center;
-    position: relative;
-  }
-
-  & .name {
-    font-size: 1.7em;
-  }
-
-  & .event {
-    font-size: 3em;
-
-    background-image: var(--gradient);
-    color: gold;
-    background-clip: text;
-    -webkit-background-clip: text;
-    text-fill-color: transparent;
-    -webkit-text-fill-color: transparent;
-  }
-
-  & .date {
-    font-size: 2em;
-    position: relative;
-  }
-  & .date.on::before {
-    content: "edit";
-    position: absolute;
-    right: -25px;
-    font-family: "Material Icons Outlined";
-    cursor: pointer;
-    color: black;
-    font-size: 20px;
-    border: solid black 2px;
-    background: white;
-    border-radius: 50%;
-  }
-  & p::after {
-    content: attr(data-text);
-    position: absolute;
-    left: 0;
-    z-index: 1;
-    width: 100%;
-    font-family: "Komtits";
-    color: red;
-    -webkit-text-stroke: black 2px;
-    -webkit-text-fill-color: orangered;
-  }
+.tools {
+  background-color: rgba(255, 255, 255, 0.3);
+  position: fixed;
+  bottom: 0;
+  padding: 2px;
+  overflow: hidden;
+  z-index: 2;
+}
+.tools:hover {
+  background-color: rgba(255, 255, 255, 0.5);
+}
+.tools span:hover:after {
+  visibility: visible;
+  opacity: 1;
+  background-color: rgba(0, 0, 0, 0.75);
+  padding: 2px;
+}
+.tools .material-icons-outlined {
+  color: rgba(0, 0, 0, 0.3);
+}
+.tools .material-icons-outlined:hover {
+  color: rgba(0, 0, 0, 1);
+  cursor: pointer;
 }
 
 #pop-up {
@@ -370,112 +141,27 @@ div.kon {
   display: flex;
   justify-content: center;
   display: none;
-
-  & .container {
-    text-align: center;
-    word-wrap: break-word;
-    display: none;
-
-    & picture {
-      position: relative;
-      display: block;
-      height: 33vh;
-    }
-
-    & picture::after {
-      content: "";
-      width: 100%;
-      display: inline-block;
-      background-color: var(--ichigo);
-      height: 35%;
-      bottom: 0;
-      left: 0;
-      position: absolute;
-      z-index: -1;
-    }
-
-    & .shuffle picture::after {
-      background-color: var(--sakura);
-    }
-
-    & picture img {
-      height: 100%;
-      filter: drop-shadow(0px 15px 15px black);
-    }
-
-    & .message {
-      min-height: 33vh;
-      background-color: var(--ichigo);
-      padding: 20px;
-    }
-
-    & .shuffle .message {
-      background-color: var(--sakura);
-    }
-
-    & .message p:nth-child(1) {
-      font-size: 25px;
-    }
-
-    & .button {
-      display: inline-block;
-      width: 100%;
-      margin: 10px;
-      height: 50px;
-      border-radius: 30px;
-      overflow: hidden;
-      background-color: var(--ichigo-triad);
-      border-color: var(--ichigo-triad-2);
-      font-weight: bold;
-      text-align: center;
-      text-decoration: none;
-      font-size: 16px;
-      cursor: pointer;
-      position: relative;
-    }
-
-    & .shuffle .button {
-      background-color: var(--sakura-triad);
-      border-color: var(--sakura-triad-2);
-    }
-
-    & .button:active {
-      top: -1px;
-      box-shadow: -1px 1px 5px 0;
-    }
-
-    & .button:is(.cancel, .save) {
-      background-color: white;
-      border-color: #f45d4c;
-      color: #f45d4c;
-    }
-
-    & .button::after {
-      content: "";
-      background-color: rgba(0, 0, 0, 0.2);
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      width: 100%;
-      height: 5px;
-    }
-    &.canvas {
-      width: 75%;
-      align-self: center;
-      & img {
-        width: 100%;
-        border: solid 2px white;
-      }
-      & a {
-        display: inline-block;
-      }
-      & .button {
-        margin: 5px;
-        width: 200px;
-        & .material-icons-outlined {
-          font-size: inherit;
-        }
-      }
-    }
-  }
+}
+#pop-up .container {
+  text-align: center;
+  word-wrap: break-word;
+  display: none;
+}
+#pop-up .container.canvas {
+  width: 75%;
+  align-self: center;
+}
+#pop-up .container.canvas img {
+  width: 100%;
+  border: solid 2px white;
+}
+#pop-up .container.canvas a {
+  display: inline-block;
+}
+#pop-up .container.canvas .button {
+  margin: 5px;
+  width: 200px;
+}
+#pop-up .container.canvas .button .material-icons-outlined {
+  font-size: inherit;
 }

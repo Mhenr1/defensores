@@ -210,10 +210,6 @@ $("span.shuffle").on("click", () => {
 $("span.reset").on("click", () => {
   popUp("reset");
 });
-$("span.save").on("click", () => {
- 
-  htmlCanvas();
-});
 $("span.edit").on("click", editName);
 $("#pop-up .cancel").on("click", closePopUp);
 $("#pop-up .shuffle .confirm").on("click", shuffle);
@@ -235,22 +231,4 @@ var kon = function (n) {
   setTimeout(() => {
     kon(n);
   }, 200);
-};
-var htmlCanvas = function () {
-  $(".tools").hide();
-  html2canvas(document.body, {
-
-  })
-    .then(function (canvas) {
-      // Cria um elemento de link para fazer o download da imagem
-      var link = document.createElement("a");
-      link.href = canvas.toDataURL("image/png");
-      link.download = "torneioBBS.png";
-      $(".canvas img").attr("src", link);
-      $(".canvas a").attr("href", link);
-    })
-    .finally(() => {
-      popUp("canvas");
-      $(".tools").show();
-    });
 };
