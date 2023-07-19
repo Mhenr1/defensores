@@ -43,7 +43,7 @@ body {
   min-height: 100%;
   width: -moz-fit-content;
   width: fit-content;
-  display: grid;
+  display: flex;
   box-sizing: border-box;
 }
 body.offScroll {
@@ -59,6 +59,8 @@ body.offScroll {
   align-content: center;
   flex-flow: column wrap;
   color: white;
+  max-width: 100%;
+  width: max-content;
 }
 .header p {
   line-height: 1;

@@ -28,34 +28,35 @@
       <div class="podium">
         <div>
           <div class="gold"><img src="./img/gold.png" alt="gold" /></div>
-          <span></span>
+          <span>Campeão</span>
         </div>
         <div>
           <div class="silver"><img src="./img/silver.png" alt="silver" /></div>
-          <span></span>
+          <span>Vice</span>
         </div>
         <div>
           <div class="bronze"><img src="./img/bronze.png" alt="bronze" /></div>
-          <span></span>
+          <span>Terceiro</span>
         </div>
       </div>
     </div>
 
-
-    
     <script>
       $(document).ready(() => {
         let winner = localStorage.getItem("winner");
         let vice = localStorage.getItem("vice");
         let consolation = localStorage.getItem("consolation");
         let date = localStorage.getItem("date");
-        $("p.date").text(date);
-        $("p.date").attr("data-text", date);
-
+        if (date) {
+          $("p.date").text(date);
+          $("p.date").attr("data-text", date);
+        }
         var podium = $(".podium span");
-        podium.eq(0).text(winner);
-        podium.eq(1).text(vice);
-        podium.eq(2).text(consolation);
+        if (consolation) {
+          podium.eq(0).text(winner);
+          podium.eq(1).text(vice);
+          podium.eq(2).text(consolation);
+        }
       });
     </script>
   </body>
