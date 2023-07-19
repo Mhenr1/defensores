@@ -71,16 +71,22 @@ div.jQBracket:not(.rl) .round:last-of-type .team::after {
   background-image: url("../img/Arena.png");
   background-size: 44px;
 }
-div.jQBracket .team.highlightWinner, div.jQBracket .match :not(.bubble)::after {
+div.jQBracket .team.highlightWinner,
+div.jQBracket .match :not(.bubble)::after {
   background-color: var(--ichigo);
 }
-div.jQBracket.rl .team.highlightWinner, div.jQBracket.rl .match ::after, div.jQBracket .round:last-of-type .team.highlightWinner:nth-child(2n) {
+div.jQBracket.rl .team.highlightWinner,
+div.jQBracket.rl .match ::after,
+div.jQBracket .round:last-of-type .team.highlightWinner:nth-child(2n) {
   background-color: var(--sakura);
 }
-div.jQBracket .connector.highlightWinner, div.jQBracket .connector div.connector.highlightWinner {
+div.jQBracket .connector.highlightWinner,
+div.jQBracket .connector div.connector.highlightWinner {
   border-color: var(--ichigo);
 }
-div.jQBracket.rl .connector.highlightWinner, div.jQBracket.rl ::after, div.jQBracket.rl .connector div.connector.highlightWinner {
+div.jQBracket.rl .connector.highlightWinner,
+div.jQBracket.rl ::after,
+div.jQBracket.rl .connector div.connector.highlightWinner {
   border-color: var(--sakura);
 }
 div.jQBracket .match:has(.highlightWinner) {
@@ -173,7 +179,8 @@ div.jQBracket.lr {
 .tools #lock {
   color: rgba(255, 0, 0, 0.5);
 }
-.tools.unlock #lock, .tools.unlock span:after {
+.tools.unlock #lock,
+.tools.unlock span:after {
   color: rgba(0, 255, 0, 0.5);
 }
 .tools #lock::after {
@@ -225,7 +232,7 @@ div.kon img {
   position: absolute;
   z-index: -1;
 }
-#pop-up .container .shuffle picture::after {
+#pop-up .container.shuffle picture::after {
   background-color: var(--sakura);
 }
 #pop-up .container picture img {
@@ -237,7 +244,7 @@ div.kon img {
   background-color: var(--ichigo);
   padding: 20px;
 }
-#pop-up .container .shuffle .message {
+#pop-up .container.shuffle .message {
   background-color: var(--sakura);
 }
 #pop-up .container .message p:nth-child(1) {
@@ -259,7 +266,7 @@ div.kon img {
   cursor: pointer;
   position: relative;
 }
-#pop-up .container .shuffle .button {
+#pop-up .container.shuffle .button {
   background-color: var(--sakura-triad);
   border-color: var(--sakura-triad-2);
 }
