@@ -5,17 +5,18 @@
 
 #content {
   margin: auto;
+  padding-top:130px;
+
 }
 #content .podium {
   display: flex;
-
 }
 #content .podium > div {
   border: solid 2px silver;
   border-radius: 5px;
+  aspect-ratio: 1/1.6;
   width: var(--width);
   max-width: 200px;
-  aspect-ratio: 1/1.6;
   display: flex;
   flex-direction: column;
   align-items: center;
