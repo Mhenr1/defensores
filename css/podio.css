@@ -4,12 +4,22 @@
 }
 
 #content {
-  margin: auto;
-  padding-block:150px;
+  padding: 0;
+  margin: 0 auto;
+  padding-block: 20px;
+ 
+}
 
+.header {
+  color: white;
+  max-width: 100%;
+  width: max-content;
+  text-align: center;
+  margin: 0 auto;
 }
 #content .podium {
   display: flex;
+  margin:20px;
 }
 #content .podium > div {
   border: solid 2px silver;

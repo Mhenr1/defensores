@@ -33,7 +33,7 @@
 }
 
 body {
-  background: url("../arena.png");
+  background: url("../img/arena_top.webp");
   background-attachment: fixed;
   background-size: cover;
   user-select: none;
@@ -50,21 +50,9 @@ body.offScroll {
   overflow: hidden;
 }
 
-.header {
-  position: absolute;
-  top: 20px;
-  left: 50%;
-  transform: translate(-50%);
-  display: flex;
-  align-content: center;
-  flex-flow: column wrap;
-  color: white;
-  max-width: 100%;
-  width: max-content;
-}
+
 .header p {
   line-height: 1;
-  text-align: center;
   position: relative;
 }
 .header .name {
@@ -82,6 +70,9 @@ body.offScroll {
 .header .date {
   font-size: 2em;
   position: relative;
+}
+.header img{
+  width:30%; 
 }
 .header .date.on::before {
   content: "edit";
@@ -106,6 +97,7 @@ body.offScroll {
   color: red;
   -webkit-text-stroke: black 2px;
   -webkit-text-fill-color: orangered;
+
 }
 
 .tools {

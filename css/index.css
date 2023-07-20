@@ -133,8 +133,18 @@ div.jQBracket.lr {
 #content {
   justify-self: center;
   align-self: center;
-  padding:50px 15px;
-  margin:auto;
+  padding: 50px 15px;
+  margin: auto;
+}
+.header {
+  position: absolute;
+  top: 20px;
+  left: 50%;
+  transform: translate(-50%);
+  color: white;
+  max-width: 100%;
+  width: max-content;
+  text-align: center;
 }
 #content.animate_content div.jQBracket .team {
   transform: rotateX(180deg);
@@ -200,7 +210,6 @@ div.kon {
 div.kon img {
   height: 100%;
 }
-
 
 #pop-up .container {
   text-align: center;
