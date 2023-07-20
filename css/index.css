@@ -64,7 +64,7 @@ div.jQBracket .team div.label {
 div.jQBracket .team:first-child .bubble {
   border-bottom: 1px solid #999;
 }
-.rl div.jQBracket .team::after {
+ div.jQBracket.rl .team::after {
   background-image: url("../img/Byakuya-big.png");
 }
 div.jQBracket:not(.rl) .round:last-of-type .team::after {
