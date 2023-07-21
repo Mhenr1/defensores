@@ -7,7 +7,6 @@
   padding: 0;
   margin: 0 auto;
   padding-block: 20px;
- 
 }
 
 .header {
@@ -19,10 +18,10 @@
 }
 #content .podium {
   display: flex;
-  margin:20px;
+  margin: 20px;
 }
 #content .podium > div {
-  border: solid 2px silver;
+  border: solid 2px var(--color);
   border-radius: 5px;
   aspect-ratio: 1/1.6;
   width: var(--width);
@@ -68,10 +67,10 @@
   position: relative;
 }
 
-#content .podium > div:nth-child(2) span {
-  background: #ccc;
+#content .podium .silver span {
+  background: silver;
 }
-#content .podium > div:last-child span {
+#content .podium > .bronze span {
   background: #963;
 }
 #content .podium > div span:after {
@@ -83,4 +82,8 @@
   position: absolute;
   bottom: 0;
   left: 0;
+}
+#content .podium > div img {
+  border-radius: 50%;
+  border: solid 2px var(--color);
 }
