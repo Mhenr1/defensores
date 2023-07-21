@@ -36,6 +36,7 @@ body {
   background: url("../img/arena_award.webp");
   background-attachment: fixed;
   background-size: cover;
+  background-position:center 0;
   user-select: none;
   position: absolute;
   font-family: "Komika";
