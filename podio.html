@@ -53,11 +53,10 @@
           $("p.date").attr("data-text", date);
         }
         var podium = $(".podium span");
-        if (consolation) {
-          podium.eq(0).text(winner);
-          podium.eq(1).text(vice);
-          podium.eq(2).text(consolation);
-        }
+
+        winner ? podium.eq(0).text(winner) : "";
+        vice ? podium.eq(1).text(vice) : "";
+        consolation ? podium.eq(2).text(consolation) : "";
       });
     </script>
   </body>

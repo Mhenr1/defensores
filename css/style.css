@@ -11,11 +11,6 @@
   src: url("../font/HEAVYRUST.ttf");
 }
 
-@media print {
-  body {
-    background: red !important;
-  }
-}
 :root {
   --sakura: #ff849c;
   --sakura-triad: #95ff84;
@@ -97,7 +92,6 @@ body.offScroll {
   font-family: "Komtits";
   color: red;
   -webkit-text-stroke: black 2px;
-  -webkit-text-fill-color: orangered;
 
 }
 

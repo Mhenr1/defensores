@@ -1,7 +1,4 @@
 @import "style.css";
-:root {
-  --width: 25vw;
-}
 
 #content {
   padding: 0;
@@ -14,7 +11,7 @@
   max-width: 100%;
   width: max-content;
   text-align: center;
-  margin: 0 auto;
+  margin-inline: auto;
 }
 #content .podium {
   display: flex;
@@ -24,7 +21,7 @@
   border: solid 2px var(--color);
   border-radius: 5px;
   aspect-ratio: 1/1.6;
-  width: var(--width);
+  width: 25vw;
   max-width: 200px;
   display: flex;
   flex-direction: column;
@@ -38,9 +35,7 @@
 #content .podium > div div {
   padding: 5px;
 }
-#content .podium > div img {
-  max-width: 75%;
-}
+
 #content .podium > div:first-child {
   transform: scale(1.05);
   box-shadow: 9px 0px 19px 1px rgba(0, 0, 0, 0.75),
@@ -58,22 +53,16 @@
   z-index: 2;
   transform: scale(1.1);
 }
-#content .podium > div span {
+#content .podium span {
   font-size: clamp(11px, 22px, 2em);
-  background: #da0;
+  background: var(--color);
   display: inline-block;
   width: 100%;
   text-align: center;
   position: relative;
 }
 
-#content .podium .silver span {
-  background: silver;
-}
-#content .podium > .bronze span {
-  background: #963;
-}
-#content .podium > div span:after {
+#content .podium span:after {
   height: 50%;
   width: inherit;
   content: "";
@@ -86,4 +75,5 @@
 #content .podium > div img {
   border-radius: 50%;
   border: solid 2px var(--color);
+  max-width: 75%;
 }
