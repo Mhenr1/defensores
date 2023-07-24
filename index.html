@@ -3,33 +3,20 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="./css/bracket.css" />
-
+    <link rel="stylesheet" href="./css/bracket.css?v=1" />
+    <link rel="stylesheet" href="./css/style.css?v=1" />
+    <link rel="stylesheet" href="./css/index.css?v=1" />
     <script
       src="https://code.jquery.com/jquery-3.7.0.min.js"
       integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g="
       crossorigin="anonymous"
     ></script>
     <link
-      href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined"
       rel="stylesheet"
+      href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined"
     />
     <link rel="icon" type="image/x-icon" href="./img/favicon.ico" />
 
-    <script>
-      (function () {
-        // Replace with the URL of your CSS style sheet
-        const href = "./css/index.css";
-
-        // Leave the rest of the code as-is
-        const link = document.createElement("link");
-        const cacheBuster = Math.round(new Date().getTime() / 1000);
-        link.setAttribute("href", href + "?cb=" + cacheBuster);
-        link.setAttribute("rel", "stylesheet");
-        document.head.appendChild(link);
-      })();
-    </script>
-    <script src="./js/bracket.js?v=2"></script>
     <title>Torneio Defensores</title>
   </head>
 
@@ -41,7 +28,7 @@
         </p>
         <p class="event" data-text="Torneio de arena">Torneio de arena</p>
         <p class="date" data-before="" data-text="Julho 2023">Julho 2023</p>
-        <img src="./img/text_main_arena.png" alt="Arena">
+        <img src="./img/text_main_arena.png" alt="Arena" />
       </div>
       <div class="tournament"></div>
     </div>
@@ -58,9 +45,9 @@
         <span class="material-icons-outlined reset" data-popup="Resetar">
           restart_alt
         </span>
-        <a href="./podio"><span class="material-icons-outlined">
-          emoji_events
-          </span></a>
+        <a href="./podio"
+          ><span class="material-icons-outlined"> emoji_events </span></a
+        >
       </div>
     </div>
     <div class="kon">
@@ -99,11 +86,10 @@
           </form>
         </div>
       </div>
-     
     </div>
-    
+
     <div class="overlayer"></div>
-    
+  </body>
+  <script src="./js/bracket.js?v=3"></script>
   <script src="./js/app.js?v=3"></script>
-  <script src="./js/html2canvas.js"></script>
 </html>
