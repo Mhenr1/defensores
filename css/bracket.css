@@ -21,7 +21,7 @@ div.jQBracket .tools span {
     height: 18px;
     background-color: #666
 }
-
+.doubleElimination{ display:none;}
 div.jQBracket .tools span:hover {
     background-color: #999
 }
