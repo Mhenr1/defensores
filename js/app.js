@@ -1,6 +1,7 @@
 var shuffleActive = false;
 var locked = true;
 var disableTeamEdit = true;
+var disableToolbar = true;
 disableTeamEdit = eval(disableTeamEdit);
 var modelIchigo = {
   teams: [
@@ -68,7 +69,7 @@ function render(container, data, _score, state) {
 var initTournament = function () {
   var conf = {
     skipConsolationRound: false,
-    disableToolbar: true,
+    disableToolbar,
     teamWidth: 100,
     save,
     isSingleElimination: false,
@@ -154,7 +155,7 @@ function lockandInit() {
 function setName() {
   if (locked) return;
   disableTeamEdit = false;
-     disableToolbar= false;
+  disableToolbar  = false;
   $(".overlayer").addClass("editActive");
   $("p.date").addClass("on");
   $("p.date").attr("contenteditable", "true");
