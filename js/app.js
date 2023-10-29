@@ -143,6 +143,7 @@ function lockandInit() {
   let left = window.scrollX || document.documentElement.scrollLeft;
 
   disableTeamEdit = true;
+  disableToolbar = true;
   $(".overlayer").removeClass("editActive");
   $("p.date").attr("contenteditable", "false");
   $("p.date").off("click");
@@ -153,6 +154,7 @@ function lockandInit() {
 function setName() {
   if (locked) return;
   disableTeamEdit = false;
+     disableToolbar= false;
   $(".overlayer").addClass("editActive");
   $("p.date").addClass("on");
   $("p.date").attr("contenteditable", "true");
