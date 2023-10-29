@@ -24,7 +24,7 @@ div.jQBracket {
   width: fit-content !important;
   display: inline-block;
   white-space: nowrap;
-  pointer-events: none;
+  pointer-events: auto;
   z-index: 0;
 }
 div.jQBracket .bracket {
