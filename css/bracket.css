@@ -8,7 +8,8 @@ div.jQBracket {
 div.jQBracket .tools {
     position: absolute;
     top: 0;
-    color: #fff
+    color: #fff;
+    left:-5%;
 }
 
 div.jQBracket .tools span {
