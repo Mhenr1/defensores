@@ -105,19 +105,24 @@ div.jQBracket .bracket .round::after {
   position: absolute;
   bottom: -5px;
 }
-div.jQBracket .bracket .round:nth-child(2)::after {
+
+div.jQBracket.rl .bracket .round:nth-last-child(3)::after ,
+div.jQBracket.lr .bracket .round:nth-last-child(4)::after{
   content: "Oitavas";
   font-size: 1.6em;
 }
-div.jQBracket .bracket .round:nth-child(3)::after {
+div.jQBracket.rl .bracket .round:nth-last-child(2)::after ,
+div.jQBracket.lr .bracket .round:nth-last-child(3)::after{
   content: "Quartas";
   font-size: 1.8em;
 }
-div.jQBracket .bracket .round:nth-child(4)::after {
+div.jQBracket.rl .bracket .round:nth-last-child(1)::after ,
+div.jQBracket.lr .bracket .round:nth-last-child(2)::after{
   content: "Semi";
   font-size: 2em;
 }
-div.jQBracket .bracket .round:nth-child(5)::after {
+div.jQBracket.rl .bracket .round:nth-last-child(0)::after ,
+div.jQBracket.lr .bracket .round:nth-last-child(1)::after{
   content: "Final";
   font-size: 2.2em;
 }
