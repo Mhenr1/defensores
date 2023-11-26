@@ -103,7 +103,7 @@ div.jQBracket .bracket .round::after {
   display: inline-block;
   text-align: center;
   position: absolute;
-  bottom: -15%;
+  bottom: -10%;
 }
 
 div.jQBracket.rl .bracket .round:nth-last-child(3)::after ,
